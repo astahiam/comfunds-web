@@ -18,7 +18,7 @@ class FeaturesSection extends StatelessWidget {
             'Why Choose ComFunds?',
             style: AppTextStyles.h2.copyWith(
               color: AppColors.textPrimary,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
             ),
           ),
           
@@ -28,7 +28,7 @@ class FeaturesSection extends StatelessWidget {
             'Experience the future of cooperative financing with our comprehensive platform designed for Sharia-compliant investments.',
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.textSecondary,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
             ),
           ),
           

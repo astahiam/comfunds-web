@@ -21,7 +21,6 @@ class App extends StatelessWidget {
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
           theme: Theme.of(context).copyWith(
-            primarySwatch: Colors.green,
             primaryColor: AppColors.primary,
             scaffoldBackgroundColor: Colors.white,
             appBarTheme: const AppBarTheme(

@@ -7,6 +7,7 @@ import 'providers/theme_provider.dart';
 import 'providers/project_provider.dart';
 import 'providers/investment_provider.dart';
 import 'providers/cooperative_provider.dart';
+import 'providers/business_provider.dart';
 import 'utils/constants.dart';
 
 void main() {
@@ -24,6 +25,7 @@ class ComFundsApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProjectProvider()),
         ChangeNotifierProvider(create: (_) => InvestmentProvider()),
         ChangeNotifierProvider(create: (_) => CooperativeProvider()),
+        ChangeNotifierProvider(create: (_) => BusinessProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

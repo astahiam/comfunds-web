@@ -255,11 +255,11 @@ class FooterSection extends StatelessWidget {
       children: [
         _buildSocialLink(Icons.facebook, AppConstants.facebookUrl),
         const SizedBox(width: AppSizes.md),
-        _buildSocialLink(Icons.twitter, AppConstants.twitterUrl),
+        _buildSocialLink(Icons.flutter_dash, AppConstants.twitterUrl),
         const SizedBox(width: AppSizes.md),
-        _buildSocialLink(Icons.instagram, AppConstants.instagramUrl),
+        _buildSocialLink(Icons.camera_alt, AppConstants.instagramUrl),
         const SizedBox(width: AppSizes.md),
-        _buildSocialLink(Icons.linkedin, AppConstants.linkedinUrl),
+        _buildSocialLink(Icons.work, AppConstants.linkedinUrl),
       ],
     );
   }

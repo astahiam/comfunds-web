@@ -21,7 +21,7 @@ class TestimonialsSection extends StatelessWidget {
             'What Our Members Say',
             style: AppTextStyles.h2.copyWith(
               color: AppColors.textPrimary,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
             ),
           ),
           
@@ -31,7 +31,7 @@ class TestimonialsSection extends StatelessWidget {
             'Hear from cooperative members who have successfully invested through our platform',
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.textSecondary,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
             ),
           ),
           

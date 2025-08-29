@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/user.dart';
+import '../services/auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   User? _user;
@@ -17,23 +18,9 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // TODO: Implement actual API call
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
-      
-      // Mock user data
-      _user = User(
-        id: '1',
-        email: email,
-        name: 'John Doe',
-        phone: '+6281234567890',
-        address: 'Jakarta, Indonesia',
-        cooperativeId: 'coop-1',
-        roles: ['member', 'investor'],
-        kycStatus: 'verified',
-        isActive: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+      final result = await AuthService.login(email: email, password: password);
+      _user = result['user'] as User;
+      await AuthService.storeUserData(_user!);
       
       _isLoading = false;
       notifyListeners();
@@ -46,29 +33,21 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> register(String name, String email, String password, String phone, String address) async {
+  Future<bool> register(String name, String email, String password, String phone, String address, List<String> roles) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      // TODO: Implement actual API call
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
-      
-      // Mock user data
-      _user = User(
-        id: '1',
+      _user = await AuthService.register(
         email: email,
+        password: password,
         name: name,
         phone: phone,
         address: address,
-        cooperativeId: null,
-        roles: ['guest'],
-        kycStatus: 'pending',
-        isActive: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        roles: roles,
       );
+      await AuthService.storeUserData(_user!);
       
       _isLoading = false;
       notifyListeners();
@@ -86,9 +65,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // TODO: Implement actual API call
-      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
-      
+      await AuthService.logout();
       _user = null;
       _isLoading = false;
       notifyListeners();

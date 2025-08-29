@@ -27,7 +27,7 @@ class CTASection extends StatelessWidget {
                   style: AppTextStyles.h2.copyWith(
                     color: Colors.white,
                     fontSize: constraints.maxWidth > 768 ? 36 : 28,
-                    textAlign: TextAlign.center,
+                    // textAlign: TextAlign.center,
                   ),
                 ),
                 
@@ -38,7 +38,7 @@ class CTASection extends StatelessWidget {
                   style: AppTextStyles.bodyLarge.copyWith(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: constraints.maxWidth > 768 ? 18 : 16,
-                    textAlign: TextAlign.center,
+                    // textAlign: TextAlign.center,
                     height: 1.6,
                   ),
                 ),
@@ -116,7 +116,7 @@ class CTASection extends StatelessWidget {
                           'No setup fees • No hidden charges • 100% Sharia compliant',
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.white.withOpacity(0.8),
-                            textAlign: TextAlign.center,
+                            // textAlign: TextAlign.center,
                           ),
                         ),
                       ),

@@ -59,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     'Join ComFunds and start your investment journey',
                     style: AppTextStyles.bodyLarge.copyWith(
                       color: AppColors.textSecondary,
-                      textAlign: TextAlign.center,
+                      // textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(height: AppSizes.xxl),
@@ -241,6 +241,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _passwordController.text,
         _phoneController.text,
         _addressController.text,
+        ['guest'], // Default role for new registrations
       );
       
       if (success && mounted) {

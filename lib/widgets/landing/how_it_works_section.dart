@@ -21,7 +21,7 @@ class HowItWorksSection extends StatelessWidget {
             'How It Works',
             style: AppTextStyles.h2.copyWith(
               color: AppColors.textPrimary,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
             ),
           ),
           
@@ -31,7 +31,7 @@ class HowItWorksSection extends StatelessWidget {
             'Simple steps to start your Sharia-compliant investment journey',
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.textSecondary,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
             ),
           ),
           
@@ -118,7 +118,7 @@ class HowItWorksSection extends StatelessWidget {
             title,
             style: AppTextStyles.h5.copyWith(
               color: AppColors.textPrimary,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
             ),
           ),
           
@@ -129,7 +129,7 @@ class HowItWorksSection extends StatelessWidget {
             description,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
               height: 1.5,
             ),
           ),
