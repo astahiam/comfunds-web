@@ -24,12 +24,19 @@ class AuthService {
         'name': name,
         'phone': phone,
         'address': address,
-        'cooperative_id': cooperativeId,
+        if (cooperativeId != null && cooperativeId.isNotEmpty) 'cooperative_id': cooperativeId,
         'roles': roles,
       });
 
       final data = ApiService.parseResponse(response);
-      return User.fromJson(data['user']);
+      
+      // Store tokens if provided
+      if (data['data'] != null && data['data']['access_token'] != null) {
+        await _storage.write(key: 'auth_token', value: data['data']['access_token']);
+        await _storage.write(key: 'refresh_token', value: data['data']['refresh_token']);
+      }
+      
+      return User.fromJson(data['data']['user']);
     } catch (e) {
       throw Exception(ApiService.handleError(e));
     }
@@ -49,13 +56,13 @@ class AuthService {
       final data = ApiService.parseResponse(response);
       
       // Store tokens
-      await _storage.write(key: 'auth_token', value: data['access_token']);
-      await _storage.write(key: 'refresh_token', value: data['refresh_token']);
+      await _storage.write(key: 'auth_token', value: data['data']['access_token']);
+      await _storage.write(key: 'refresh_token', value: data['data']['refresh_token']);
       
       return {
-        'user': User.fromJson(data['user']),
-        'access_token': data['access_token'],
-        'refresh_token': data['refresh_token'],
+        'user': User.fromJson(data['data']['user']),
+        'access_token': data['data']['access_token'],
+        'refresh_token': data['data']['refresh_token'],
       };
     } catch (e) {
       throw Exception(ApiService.handleError(e));
