@@ -1,3 +1,5 @@
+import '../utils/role_constants.dart';
+
 class User {
   final String id;
   final String email;
@@ -95,9 +97,10 @@ class User {
     return roles.contains(role);
   }
 
-  bool get isGuest => roles.contains('guest');
-  bool get isMember => roles.contains('member');
-  bool get isBusinessOwner => roles.contains('business_owner');
-  bool get isInvestor => roles.contains('investor');
-  bool get isAdmin => roles.contains('admin');
+  bool get isGuest => roles.contains(UserRoles.guest);
+  bool get isMember => roles.contains(UserRoles.member);
+  bool get isBusinessOwner => roles.contains(UserRoles.businessOwner);
+  bool get isInvestor => roles.contains(UserRoles.investor);
+  bool get isAdmin => roles.contains(UserRoles.admin);
+  bool get isCooperativeAdmin => roles.contains(UserRoles.cooperativeAdmin);
 }

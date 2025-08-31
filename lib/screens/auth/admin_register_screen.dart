@@ -5,22 +5,24 @@ import '../../utils/constants.dart';
 import '../../utils/role_constants.dart';
 import '../../widgets/common/app_button.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class AdminRegisterScreen extends StatefulWidget {
+  const AdminRegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<AdminRegisterScreen> createState() => _AdminRegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _AdminRegisterScreenState extends State<AdminRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
+  final _adminCodeController = TextEditingController();
   bool _obscurePassword = true;
-  List<String> _selectedRoles = [UserRoles.member];
+  bool _obscureAdminCode = true;
+  List<String> _selectedRoles = [UserRoles.admin];
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _passwordController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
+    _adminCodeController.dispose();
     super.dispose();
   }
 
@@ -44,13 +47,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
+        title: const Text('Admin Registration'),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
       ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSizes.xl),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
+            constraints: const BoxConstraints(maxWidth: 600),
             child: Form(
               key: _formKey,
               child: Column(
@@ -58,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   // Title
                   Text(
-                    'Create Account',
+                    'Admin Account Creation',
                     style: AppTextStyles.h2.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,
@@ -66,10 +71,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: AppSizes.sm),
                   Text(
-                    'Join ComFunds and start your investment journey',
+                    'Create administrator account with enhanced privileges',
                     style: AppTextStyles.bodyLarge.copyWith(
                       color: AppColors.textSecondary,
-                      // textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(height: AppSizes.xxl),
@@ -144,6 +148,82 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: AppSizes.lg),
 
+                  // Admin Code Field
+                  TextFormField(
+                    controller: _adminCodeController,
+                    obscureText: _obscureAdminCode,
+                    decoration: InputDecoration(
+                      labelText: 'Admin Authorization Code',
+                      prefixIcon: const Icon(Icons.security),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureAdminCode ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureAdminCode = !_obscureAdminCode;
+                          });
+                        },
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter admin authorization code';
+                      }
+                      if (value != 'ADMIN2025') { // This should be configurable
+                        return 'Invalid admin authorization code';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: AppSizes.lg),
+
+                  // Role Selection
+                  Container(
+                    padding: const EdgeInsets.all(AppSizes.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                      border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Administrative Roles',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: AppSizes.sm),
+                        ...UserRoles.allRoles.map((role) {
+                          if (role == UserRoles.guest) return const SizedBox.shrink();
+                          return CheckboxListTile(
+                            title: Text(UserRoles.getDisplayName(role)),
+                            subtitle: Text(
+                              UserRoles.getDescription(role),
+                              style: AppTextStyles.bodySmall,
+                            ),
+                            value: _selectedRoles.contains(role),
+                            onChanged: (bool? value) {
+                              setState(() {
+                                if (value == true) {
+                                  _selectedRoles.add(role);
+                                } else {
+                                  _selectedRoles.remove(role);
+                                }
+                              });
+                            },
+                            controlAffinity: ListTileControlAffinity.leading,
+                            contentPadding: EdgeInsets.zero,
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.lg),
+
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
@@ -214,59 +294,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: AppSizes.lg),
 
-                  // Role Selection
-                  Container(
-                    padding: const EdgeInsets.all(AppSizes.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.background,
-                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                      border: Border.all(color: AppColors.primary.withOpacity(0.3)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Select Your Role',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: AppSizes.sm),
-                        ...UserRoles.allRoles.where((role) => role != UserRoles.guest && role != UserRoles.admin && role != UserRoles.cooperativeAdmin).map((role) {
-                          return CheckboxListTile(
-                            title: Text(UserRoles.getDisplayName(role)),
-                            subtitle: Text(
-                              UserRoles.getDescription(role),
-                              style: AppTextStyles.bodySmall,
-                            ),
-                            value: _selectedRoles.contains(role),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                if (value == true) {
-                                  _selectedRoles.add(role);
-                                } else {
-                                  _selectedRoles.remove(role);
-                                }
-                              });
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
-                            contentPadding: EdgeInsets.zero,
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
                   // Register Button
                   Consumer<AuthProvider>(
                     builder: (context, authProvider, child) {
                       return AppButton(
-                        text: 'Create Account',
+                        text: 'Create Admin Account',
                         isFullWidth: true,
                         isLoading: authProvider.isLoading,
-                        onPressed: authProvider.isLoading ? null : _handleRegister,
+                        onPressed: authProvider.isLoading ? null : _handleAdminRegister,
                       );
                     },
                   ),
@@ -318,30 +353,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSizes.md),
-                  
-                  // Admin Registration Link
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Need admin access? ',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pushNamed(context, '/admin-register'),
-                        child: Text(
-                          'Admin Registration',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.secondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -373,7 +384,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void _handleRegister() async {
+  void _handleAdminRegister() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedRoles.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(

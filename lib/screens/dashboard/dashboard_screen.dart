@@ -11,6 +11,7 @@ import '../../models/investment.dart';
 import '../../models/business.dart';
 import '../../models/cooperative.dart';
 import '../../utils/constants.dart';
+import '../../utils/role_constants.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -34,17 +35,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     
     if (user != null) {
       // Load data based on user roles
-      if (user.hasRole('investor')) {
+      if (user.hasRole(UserRoles.investor)) {
         await Provider.of<InvestmentProvider>(context, listen: false)
             .fetchPortfolio(user.id);
       }
       
-      if (user.hasRole('business_owner')) {
+      if (user.hasRole(UserRoles.businessOwner)) {
         await Provider.of<BusinessProvider>(context, listen: false)
             .fetchBusinessesByOwner(user.id);
       }
       
-      if (user.hasRole('member')) {
+      if (user.hasRole(UserRoles.member)) {
         await Provider.of<ProjectProvider>(context, listen: false)
             .fetchProjects(cooperativeId: user.cooperativeId);
       }
