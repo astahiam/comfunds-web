@@ -13,6 +13,8 @@ import 'screens/auth/admin_register_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
 import 'screens/admin/cooperative_admin_dashboard_screen.dart';
+import 'screens/business/create_business_screen.dart';
+import 'screens/investment/investment_screen.dart';
 import 'models/user.dart';
 import 'utils/role_constants.dart';
 
@@ -58,6 +60,8 @@ class MyApp extends StatelessWidget {
               '/dashboard': (context) => const DashboardScreen(),
               '/admin-dashboard': (context) => const AdminDashboardScreen(),
               '/cooperative-admin-dashboard': (context) => const CooperativeAdminDashboardScreen(),
+              '/create-business': (context) => const CreateBusinessScreen(),
+              '/investment': (context) => const InvestmentScreen(),
             },
           );
         },

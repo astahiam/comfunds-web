@@ -663,12 +663,19 @@ class _CooperativeAdminDashboardScreenState extends State<CooperativeAdminDashbo
           children: [
             Text(project.description),
             Text('Goal: \$${project.fundingGoal.toStringAsFixed(0)}'),
-            Text('Status: ${project.status}'),
+            Text('Current: \$${project.currentFunding.toStringAsFixed(0)}'),
+            Text('Progress: ${project.fundingProgress.toStringAsFixed(1)}%'),
+            Text('Status: ${project.status.toUpperCase()}'),
+            if (project.fundingDeadline != null)
+              Text('Deadline: ${project.fundingDeadline!.toLocal().toString().split(' ')[0]}'),
           ],
         ),
         trailing: PopupMenuButton(
-          itemBuilder: (context) => [
-            const PopupMenuItem(
+          itemBuilder: (context) {
+            final items = <PopupMenuItem>[];
+            
+            // Edit option for all projects
+            items.add(const PopupMenuItem(
               value: 'edit',
               child: Row(
                 children: [
@@ -677,23 +684,111 @@ class _CooperativeAdminDashboardScreenState extends State<CooperativeAdminDashbo
                   Text('Edit'),
                 ],
               ),
-            ),
-            const PopupMenuItem(
-              value: 'delete',
+            ));
+            
+            // Approval actions based on project status
+            if (project.isSubmitted) {
+              items.add(const PopupMenuItem(
+                value: 'approve',
+                child: Row(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green),
+                    SizedBox(width: 8),
+                    Text('Approve'),
+                  ],
+                ),
+              ));
+              items.add(const PopupMenuItem(
+                value: 'reject',
+                child: Row(
+                  children: [
+                    Icon(Icons.cancel, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('Reject'),
+                  ],
+                ),
+              ));
+            }
+            
+            // Investment actions for approved projects
+            if (project.isApproved) {
+              items.add(const PopupMenuItem(
+                value: 'start_investment',
+                child: Row(
+                  children: [
+                    Icon(Icons.play_circle, color: Colors.blue),
+                    SizedBox(width: 8),
+                    Text('Start Investment'),
+                  ],
+                ),
+              ));
+            }
+            
+            // Close funding for active projects
+            if (project.isActive) {
+              items.add(const PopupMenuItem(
+                value: 'close',
+                child: Row(
+                  children: [
+                    Icon(Icons.stop_circle, color: Colors.orange),
+                    SizedBox(width: 8),
+                    Text('Close Funding'),
+                  ],
+                ),
+              ));
+            }
+            
+            // View details for all projects
+            items.add(const PopupMenuItem(
+              value: 'view',
               child: Row(
                 children: [
-                  Icon(Icons.delete, color: Colors.red),
+                  Icon(Icons.visibility),
                   SizedBox(width: 8),
-                  Text('Delete', style: TextStyle(color: Colors.red)),
+                  Text('View Details'),
                 ],
               ),
-            ),
-          ],
-          onSelected: (value) {
-            if (value == 'edit') {
-              _showEditProjectDialog(project);
-            } else if (value == 'delete') {
-              _showDeleteProjectDialog(project);
+            ));
+            
+            // Delete option for draft projects only
+            if (project.isDraft) {
+              items.add(const PopupMenuItem(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    Icon(Icons.delete, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('Delete', style: TextStyle(color: Colors.red)),
+                  ],
+                ),
+              ));
+            }
+            
+            return items;
+          },
+          onSelected: (value) async {
+            switch (value) {
+              case 'edit':
+                _showEditProjectDialog(project);
+                break;
+              case 'approve':
+                await _approveProject(project);
+                break;
+              case 'reject':
+                _showRejectProjectDialog(project);
+                break;
+              case 'start_investment':
+                await _startInvestment(project);
+                break;
+              case 'close':
+                await _closeProject(project);
+                break;
+              case 'view':
+                _showProjectDetails(project);
+                break;
+              case 'delete':
+                _showDeleteProjectDialog(project);
+                break;
             }
           },
         ),
@@ -959,6 +1054,191 @@ class _CooperativeAdminDashboardScreenState extends State<CooperativeAdminDashbo
     // TODO: Implement reports dialog
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Reports dialog - To be implemented')),
+    );
+  }
+
+  // Project approval methods
+  Future<void> _approveProject(Project project) async {
+    try {
+      final projectProvider = Provider.of<ProjectProvider>(context, listen: false);
+      final success = await projectProvider.approveProject(project.id);
+      
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Project "${project.title}" approved successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        _loadData(); // Refresh data
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error approving project: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showRejectProjectDialog(Project project) {
+    final reasonController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Reject Project: ${project.title}'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Please provide a reason for rejection:'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: reasonController,
+              decoration: const InputDecoration(
+                labelText: 'Rejection Reason',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              await _rejectProject(project, reasonController.text);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Reject'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _rejectProject(Project project, String reason) async {
+    try {
+      final projectProvider = Provider.of<ProjectProvider>(context, listen: false);
+      final success = await projectProvider.rejectProject(project.id, reason: reason);
+      
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Project "${project.title}" rejected.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        _loadData(); // Refresh data
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error rejecting project: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _startInvestment(Project project) async {
+    try {
+      final projectProvider = Provider.of<ProjectProvider>(context, listen: false);
+      final success = await projectProvider.startInvestment(project.id);
+      
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Investment process started for "${project.title}"!'),
+            backgroundColor: Colors.blue,
+          ),
+        );
+        _loadData(); // Refresh data
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error starting investment: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _closeProject(Project project) async {
+    try {
+      final projectProvider = Provider.of<ProjectProvider>(context, listen: false);
+      final success = await projectProvider.closeProject(project.id);
+      
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Funding closed for "${project.title}"!'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        _loadData(); // Refresh data
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error closing project: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showProjectDetails(Project project) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(project.title),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Description: ${project.description}'),
+              const SizedBox(height: 8),
+              Text('Business ID: ${project.businessId}'),
+              const SizedBox(height: 8),
+              Text('Funding Goal: \$${project.fundingGoal.toStringAsFixed(0)}'),
+              if (project.minimumFunding != null)
+                Text('Minimum Funding: \$${project.minimumFunding!.toStringAsFixed(0)}'),
+              Text('Current Funding: \$${project.currentFunding.toStringAsFixed(0)}'),
+              Text('Progress: ${project.fundingProgress.toStringAsFixed(1)}%'),
+              const SizedBox(height: 8),
+              Text('Project Type: ${project.projectType}'),
+              Text('Status: ${project.status.toUpperCase()}'),
+              if (project.fundingDeadline != null)
+                Text('Deadline: ${project.fundingDeadline!.toLocal().toString()}'),
+              const SizedBox(height: 8),
+              Text('Created: ${project.createdAt.toLocal().toString()}'),
+              Text('Updated: ${project.updatedAt.toLocal().toString()}'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
     );
   }
 }

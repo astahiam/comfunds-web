@@ -101,4 +101,94 @@ class InvestmentProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  // Investment methods for cooperative members
+  Future<void> fetchInvestmentsByMember(String memberId, {String? cooperativeId}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _investments = await InvestmentService.getInvestmentsByMember(
+        memberId,
+        cooperativeId: cooperativeId,
+      );
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<List<dynamic>> getAvailableProjectsForInvestment({String? cooperativeId}) async {
+    try {
+      return await InvestmentService.getAvailableProjectsForInvestment(
+        cooperativeId: cooperativeId,
+      );
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return [];
+    }
+  }
+
+  Future<bool> canInvestInProject(String userId, String projectId) async {
+    try {
+      return await InvestmentService.canInvestInProject(userId, projectId);
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> getInvestmentLimits(String userId) async {
+    try {
+      return await InvestmentService.getInvestmentLimits(userId);
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return {};
+    }
+  }
+
+  Future<bool> withdrawInvestment(String id, {String? reason}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final updatedInvestment = await InvestmentService.withdrawInvestment(id, reason: reason);
+      final index = _investments.indexWhere((inv) => inv.id == id);
+      if (index != -1) {
+        _investments[index] = updatedInvestment;
+      }
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<void> fetchInvestmentHistory(String userId, {String? status}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _investments = await InvestmentService.getInvestmentHistory(userId, status: status);
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

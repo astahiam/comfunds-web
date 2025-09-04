@@ -139,4 +139,93 @@ class InvestmentService {
         .where((inv) => inv.isActive)
         .fold(0.0, (sum, inv) => sum + inv.amount);
   }
+
+  // Get investments by cooperative member
+  static Future<List<Investment>> getInvestmentsByMember(String memberId, {String? cooperativeId}) async {
+    try {
+      String endpoint = '/investments/member/$memberId';
+      if (cooperativeId != null) {
+        endpoint += '?cooperative_id=$cooperativeId';
+      }
+      
+      final response = await ApiService.get(endpoint);
+      final data = ApiService.parseResponse(response);
+      
+      return (data['investments'] as List)
+          .map((json) => Investment.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Get available projects for investment
+  static Future<List<dynamic>> getAvailableProjectsForInvestment({String? cooperativeId}) async {
+    try {
+      String endpoint = '/projects/available-for-investment';
+      if (cooperativeId != null) {
+        endpoint += '?cooperative_id=$cooperativeId';
+      }
+      
+      final response = await ApiService.get(endpoint);
+      final data = ApiService.parseResponse(response);
+      return data['projects'] as List;
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Check if user can invest in project
+  static Future<bool> canInvestInProject(String userId, String projectId) async {
+    try {
+      final response = await ApiService.get('/investments/can-invest?user_id=$userId&project_id=$projectId');
+      final data = ApiService.parseResponse(response);
+      return data['can_invest'] as bool? ?? false;
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Get investment limits for user
+  static Future<Map<String, dynamic>> getInvestmentLimits(String userId) async {
+    try {
+      final response = await ApiService.get('/investments/limits/$userId');
+      final data = ApiService.parseResponse(response);
+      return data['limits'] as Map<String, dynamic>;
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Withdraw investment (if allowed)
+  static Future<Investment> withdrawInvestment(String id, {String? reason}) async {
+    try {
+      final response = await ApiService.post('/investments/$id/withdraw', {
+        'reason': reason,
+      });
+      final data = ApiService.parseResponse(response);
+      return Investment.fromJson(data['investment']);
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Get investment history
+  static Future<List<Investment>> getInvestmentHistory(String userId, {String? status}) async {
+    try {
+      String endpoint = '/investments/history/$userId';
+      if (status != null) {
+        endpoint += '?status=$status';
+      }
+      
+      final response = await ApiService.get(endpoint);
+      final data = ApiService.parseResponse(response);
+      
+      return (data['investments'] as List)
+          .map((json) => Investment.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
 }

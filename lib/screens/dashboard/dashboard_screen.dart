@@ -145,6 +145,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
         icon: Icon(Icons.work),
         label: Text('Projects'),
       ));
+      
+      // Add investment option for cooperative members
+      destinations.add(const NavigationRailDestination(
+        icon: Icon(Icons.trending_up),
+        label: Text('Investments'),
+      ));
+    }
+
+    // Add business creation option for cooperative members
+    if (user.hasRole('member') && user.cooperativeId != null) {
+      destinations.add(const NavigationRailDestination(
+        icon: Icon(Icons.add_business),
+        label: Text('Create Business'),
+      ));
     }
 
     destinations.addAll([
@@ -188,8 +202,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return _buildCooperativesTab();
         }
       case 4:
-        return _buildCooperativesTab();
+        if (user.hasRole('member')) {
+          return _buildInvestmentsTab();
+        } else {
+          return _buildCooperativesTab();
+        }
       case 5:
+        if (user.hasRole('member') && user.cooperativeId != null) {
+          return _buildCreateBusinessTab();
+        } else {
+          return _buildCooperativesTab();
+        }
+      case 6:
+        return _buildCooperativesTab();
+      case 7:
         return _buildAnalyticsTab();
       default:
         return const Center(child: Text('Page not found'));
@@ -554,6 +580,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildAnalyticsTab() {
     return const Center(
       child: Text('Analytics coming soon...'),
+    );
+  }
+
+  Widget _buildInvestmentsTab() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.trending_up, size: 64, color: Colors.blue),
+          SizedBox(height: 16),
+          Text(
+            'Investment Dashboard',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'View and manage your investments in cooperative projects',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+          SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.of(context).pushNamed('/investment'),
+            icon: Icon(Icons.open_in_new),
+            label: Text('Go to Investment Dashboard'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCreateBusinessTab() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.add_business, size: 64, color: Colors.green),
+          SizedBox(height: 16),
+          Text(
+            'Create New Business',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Start a new UMKM business within your cooperative',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+          SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.of(context).pushNamed('/create-business'),
+            icon: Icon(Icons.add),
+            label: Text('Create Business'),
+          ),
+        ],
+      ),
     );
   }
 }

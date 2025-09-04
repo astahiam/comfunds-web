@@ -151,4 +151,88 @@ class ProjectService {
       throw Exception(ApiService.handleError(e));
     }
   }
+
+  // Approve project for funding
+  static Future<Project> approveProject(String id) async {
+    try {
+      final response = await ApiService.post('/projects/$id/approve', {});
+      final data = ApiService.parseResponse(response);
+      return Project.fromJson(data['project']);
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Reject project
+  static Future<Project> rejectProject(String id, {String? reason}) async {
+    try {
+      final response = await ApiService.post('/projects/$id/reject', {
+        'reason': reason,
+      });
+      final data = ApiService.parseResponse(response);
+      return Project.fromJson(data['project']);
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Start investment process for approved project
+  static Future<Project> startInvestment(String id) async {
+    try {
+      final response = await ApiService.post('/projects/$id/start-investment', {});
+      final data = ApiService.parseResponse(response);
+      return Project.fromJson(data['project']);
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Close project funding
+  static Future<Project> closeProject(String id) async {
+    try {
+      final response = await ApiService.post('/projects/$id/close', {});
+      final data = ApiService.parseResponse(response);
+      return Project.fromJson(data['project']);
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Get projects pending approval
+  static Future<List<Project>> getPendingApprovalProjects({String? cooperativeId}) async {
+    try {
+      String endpoint = '/projects/pending-approval?status=submitted';
+      if (cooperativeId != null) {
+        endpoint += '&cooperative_id=$cooperativeId';
+      }
+      
+      final response = await ApiService.get(endpoint);
+      final data = ApiService.parseResponse(response);
+      
+      return (data['projects'] as List)
+          .map((json) => Project.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
+
+  // Get projects by status
+  static Future<List<Project>> getProjectsByStatus(String status, {String? cooperativeId}) async {
+    try {
+      String endpoint = '/projects?status=$status';
+      if (cooperativeId != null) {
+        endpoint += '&cooperative_id=$cooperativeId';
+      }
+      
+      final response = await ApiService.get(endpoint);
+      final data = ApiService.parseResponse(response);
+      
+      return (data['projects'] as List)
+          .map((json) => Project.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception(ApiService.handleError(e));
+    }
+  }
 }

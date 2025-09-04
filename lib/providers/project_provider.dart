@@ -116,4 +116,130 @@ class ProjectProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  // Project approval workflow methods
+  Future<bool> approveProject(String id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final updatedProject = await ProjectService.approveProject(id);
+      final index = _projects.indexWhere((p) => p.id == id);
+      if (index != -1) {
+        _projects[index] = updatedProject;
+      }
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> rejectProject(String id, {String? reason}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final updatedProject = await ProjectService.rejectProject(id, reason: reason);
+      final index = _projects.indexWhere((p) => p.id == id);
+      if (index != -1) {
+        _projects[index] = updatedProject;
+      }
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> startInvestment(String id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final updatedProject = await ProjectService.startInvestment(id);
+      final index = _projects.indexWhere((p) => p.id == id);
+      if (index != -1) {
+        _projects[index] = updatedProject;
+      }
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> closeProject(String id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final updatedProject = await ProjectService.closeProject(id);
+      final index = _projects.indexWhere((p) => p.id == id);
+      if (index != -1) {
+        _projects[index] = updatedProject;
+      }
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<void> fetchPendingApprovalProjects({String? cooperativeId}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _projects = await ProjectService.getPendingApprovalProjects(
+        cooperativeId: cooperativeId,
+      );
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchProjectsByStatus(String status, {String? cooperativeId}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _projects = await ProjectService.getProjectsByStatus(
+        status,
+        cooperativeId: cooperativeId,
+      );
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
