@@ -1,9 +1,16 @@
 class UserRoles {
-  // Core roles
+  // Basic user roles
   static const String guest = 'guest';
   static const String member = 'member';
   static const String investor = 'investor';
   static const String businessOwner = 'business_owner';
+  
+  // Admin roles (hierarchical)
+  static const String adminComfunds = 'admin_comfunds';      // Super admin
+  static const String adminCooperative = 'admin_cooperative'; // Cooperative admin
+  static const String umkmBusiness = 'umkm_business';        // UMKM business owner
+  
+  // Legacy admin role (for backward compatibility)
   static const String admin = 'admin';
   static const String cooperativeAdmin = 'cooperative_admin';
 
@@ -13,19 +20,20 @@ class UserRoles {
     member,
     investor,
     businessOwner,
+    adminComfunds,
+    adminCooperative,
+    umkmBusiness,
     admin,
     cooperativeAdmin,
   ];
 
-  // Role hierarchy (from lowest to highest)
-  static const List<String> roleHierarchy = [
-    guest,
-    member,
-    investor,
-    businessOwner,
-    cooperativeAdmin,
-    admin,
-  ];
+  // Role hierarchy (who can assign what)
+  static const Map<String, List<String>> roleHierarchy = {
+    adminComfunds: [adminCooperative, umkmBusiness, member, investor, businessOwner],
+    adminCooperative: [member, investor, businessOwner],
+    admin: [member, investor, businessOwner], // Legacy admin
+    cooperativeAdmin: [member, investor, businessOwner], // Legacy cooperative admin
+  };
 
   // Role display names
   static const Map<String, String> roleDisplayNames = {
@@ -33,170 +41,109 @@ class UserRoles {
     member: 'Member',
     investor: 'Investor',
     businessOwner: 'Business Owner',
-    admin: 'System Administrator',
-    cooperativeAdmin: 'Cooperative Administrator',
+    adminComfunds: 'Admin ComFunds',
+    adminCooperative: 'Admin Cooperative',
+    umkmBusiness: 'UMKM Business',
+    admin: 'Admin',
+    cooperativeAdmin: 'Cooperative Admin',
   };
 
   // Role descriptions
   static const Map<String, String> roleDescriptions = {
-    guest: 'Unauthenticated user with limited access',
-    member: 'Basic cooperative member with standard access',
-    investor: 'Member who can invest in projects',
-    businessOwner: 'Member who owns and manages businesses',
-    admin: 'System administrator with full access',
-    cooperativeAdmin: 'Cooperative administrator with oversight capabilities',
+    guest: 'Guest user with limited access',
+    member: 'Basic cooperative member',
+    investor: 'User who can invest in projects',
+    businessOwner: 'Business owner who can create projects',
+    adminComfunds: 'Super administrator with full system access',
+    adminCooperative: 'Cooperative administrator managing specific cooperative',
+    umkmBusiness: 'UMKM business owner with business management access',
+    admin: 'System administrator (legacy)',
+    cooperativeAdmin: 'Cooperative administrator (legacy)',
   };
 
   // Role permissions
   static const Map<String, List<String>> rolePermissions = {
-    guest: [
-      'view_landing_page',
-      'browse_public_info',
-      'register_account',
+    guest: ['view_public_content'],
+    member: ['view_public_content', 'view_cooperative', 'basic_features'],
+    investor: ['view_public_content', 'view_cooperative', 'basic_features', 'invest', 'view_portfolio'],
+    businessOwner: ['view_public_content', 'view_cooperative', 'basic_features', 'manage_business', 'create_projects'],
+    adminComfunds: [
+      'view_public_content', 'view_cooperative', 'basic_features', 'invest', 'view_portfolio',
+      'manage_business', 'create_projects', 'manage_all_users', 'assign_roles', 'manage_all_cooperatives',
+      'manage_all_businesses', 'manage_all_projects', 'manage_all_investments', 'system_settings'
     ],
-    member: [
-      'view_landing_page',
-      'browse_public_info',
-      'register_account',
-      'access_dashboard',
-      'view_profile',
-      'edit_profile',
-      'view_projects',
-      'view_cooperative_info',
+    adminCooperative: [
+      'view_public_content', 'view_cooperative', 'basic_features', 'invest', 'view_portfolio',
+      'manage_business', 'create_projects', 'manage_cooperative_users', 'assign_roles',
+      'manage_cooperative', 'manage_cooperative_businesses', 'manage_cooperative_projects',
+      'manage_cooperative_investments'
     ],
-    investor: [
-      'view_landing_page',
-      'browse_public_info',
-      'register_account',
-      'access_dashboard',
-      'view_profile',
-      'edit_profile',
-      'view_projects',
-      'view_cooperative_info',
-      'browse_investments',
-      'make_investments',
-      'view_portfolio',
-      'track_returns',
-      'view_investment_analytics',
-    ],
-    businessOwner: [
-      'view_landing_page',
-      'browse_public_info',
-      'register_account',
-      'access_dashboard',
-      'view_profile',
-      'edit_profile',
-      'view_projects',
-      'view_cooperative_info',
-      'register_business',
-      'create_projects',
-      'manage_projects',
-      'upload_documents',
-      'track_project_performance',
-    ],
-    cooperativeAdmin: [
-      'view_landing_page',
-      'browse_public_info',
-      'register_account',
-      'access_dashboard',
-      'view_profile',
-      'edit_profile',
-      'view_projects',
-      'view_cooperative_info',
-      'manage_cooperative',
-      'approve_members',
-      'manage_roles',
-      'view_cooperative_analytics',
-      'manage_cooperative_projects',
-      'approve_businesses',
-      'manage_profit_distribution',
+    umkmBusiness: [
+      'view_public_content', 'view_cooperative', 'basic_features', 'manage_business',
+      'create_projects', 'manage_business_projects', 'view_business_investments'
     ],
     admin: [
-      'view_landing_page',
-      'browse_public_info',
-      'register_account',
-      'access_dashboard',
-      'view_profile',
-      'edit_profile',
-      'view_projects',
-      'view_cooperative_info',
-      'manage_cooperative',
-      'approve_members',
-      'manage_roles',
-      'view_cooperative_analytics',
-      'manage_cooperative_projects',
-      'approve_businesses',
-      'manage_profit_distribution',
-      'system_administration',
-      'user_management',
-      'system_configuration',
-      'financial_oversight',
-      'system_monitoring',
-      'role_management',
-      'approve_role_requests',
+      'view_public_content', 'view_cooperative', 'basic_features', 'invest', 'view_portfolio',
+      'manage_business', 'create_projects', 'manage_users', 'assign_roles', 'system_settings'
+    ],
+    cooperativeAdmin: [
+      'view_public_content', 'view_cooperative', 'basic_features', 'invest', 'view_portfolio',
+      'manage_business', 'create_projects', 'manage_cooperative_users', 'assign_roles',
+      'manage_cooperative'
     ],
   };
 
   // Check if user has permission
   static bool hasPermission(List<String> userRoles, String permission) {
     for (String role in userRoles) {
-      if (rolePermissions[role]?.contains(permission) == true) {
+      if (rolePermissions[role]?.contains(permission) ?? false) {
         return true;
       }
     }
     return false;
   }
 
-  // Get all permissions for user roles
-  static List<String> getAllPermissions(List<String> userRoles) {
-    Set<String> permissions = {};
-    for (String role in userRoles) {
-      if (rolePermissions[role] != null) {
-        permissions.addAll(rolePermissions[role]!);
-      }
-    }
-    return permissions.toList();
-  }
-
-  // Check if role can be upgraded to target role
-  static bool canUpgradeRole(String currentRole, String targetRole) {
-    int currentIndex = roleHierarchy.indexOf(currentRole);
-    int targetIndex = roleHierarchy.indexOf(targetRole);
-    
-    if (currentIndex == -1 || targetIndex == -1) {
-      return false;
-    }
-    
-    return targetIndex > currentIndex;
-  }
-
-  // Get roles that can be upgraded to
-  static List<String> getUpgradeableRoles(List<String> currentRoles) {
-    List<String> upgradeable = [];
-    
-    for (String targetRole in allRoles) {
-      bool canUpgrade = false;
-      for (String currentRole in currentRoles) {
-        if (canUpgradeRole(currentRole, targetRole)) {
-          canUpgrade = true;
-          break;
-        }
-      }
-      if (canUpgrade && !currentRoles.contains(targetRole)) {
-        upgradeable.add(targetRole);
-      }
-    }
-    
-    return upgradeable;
-  }
-
-  // Get role display name
+  // Get display name for role
   static String getDisplayName(String role) {
     return roleDisplayNames[role] ?? role;
   }
 
-  // Get role description
+  // Get description for role
   static String getDescription(String role) {
     return roleDescriptions[role] ?? 'No description available';
+  }
+
+  // Check if role can assign other roles
+  static bool canAssignRole(String userRole, String targetRole) {
+    final assignableRoles = roleHierarchy[userRole] ?? [];
+    return assignableRoles.contains(targetRole);
+  }
+
+  // Get all roles that a user can assign
+  static List<String> getAssignableRoles(String userRole) {
+    return roleHierarchy[userRole] ?? [];
+  }
+
+  // Check if role is admin level
+  static bool isAdminLevel(String role) {
+    return [
+      adminComfunds,
+      adminCooperative,
+      admin,
+      cooperativeAdmin,
+    ].contains(role);
+  }
+
+  // Check if role is super admin
+  static bool isSuperAdmin(String role) {
+    return role == adminComfunds;
+  }
+
+  // Check if role is cooperative admin
+  static bool isCooperativeAdmin(String role) {
+    return [
+      adminCooperative,
+      cooperativeAdmin,
+    ].contains(role);
   }
 }

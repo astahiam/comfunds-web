@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/constants.dart';
 import '../../utils/role_constants.dart';
-import '../../widgets/common/app_button.dart';
 
 class AdminRegisterScreen extends StatefulWidget {
   const AdminRegisterScreen({super.key});
@@ -14,33 +13,103 @@ class AdminRegisterScreen extends StatefulWidget {
 
 class _AdminRegisterScreenState extends State<AdminRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
   final _adminCodeController = TextEditingController();
+  
+  List<String> _selectedRoles = [UserRoles.adminComfunds]; // Default to admin comfunds
+  bool _isLoading = false;
   bool _obscurePassword = true;
-  bool _obscureAdminCode = true;
-  List<String> _selectedRoles = [UserRoles.admin];
-
-  @override
-  void initState() {
-    super.initState();
-    _passwordController.addListener(() {
-      setState(() {});
-    });
-  }
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _nameController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
     _adminCodeController.dispose();
     super.dispose();
+  }
+
+  void _handleAdminRegister() async {
+    if (!_formKey.currentState!.validate()) return;
+    if (_adminCodeController.text != 'ADMIN2025') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid admin authorization code'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      await authProvider.register(
+        email: _emailController.text,
+        password: _passwordController.text,
+        name: _nameController.text,
+        phone: _phoneController.text,
+        address: _addressController.text,
+        roles: _selectedRoles,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Admin user created successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.of(context).pushReplacementNamed('/login');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error creating admin user: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  bool _isPasswordStrong(String password) {
+    return password.length >= 8 &&
+           password.contains(RegExp(r'[A-Z]')) &&
+           password.contains(RegExp(r'[a-z]')) &&
+           password.contains(RegExp(r'[0-9]')) &&
+           password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+  }
+
+  double _getPasswordStrength(String password) {
+    if (password.isEmpty) return 0.0;
+    
+    double strength = 0.0;
+    if (password.length >= 8) strength += 0.25;
+    if (password.contains(RegExp(r'[A-Z]'))) strength += 0.25;
+    if (password.contains(RegExp(r'[a-z]'))) strength += 0.25;
+    if (password.contains(RegExp(r'[0-9]'))) strength += 0.25;
+    if (password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) strength += 0.25;
+    
+    return strength > 1.0 ? 1.0 : strength;
+  }
+
+  Color _getPasswordStrengthColor(double strength) {
+    if (strength < 0.5) return Colors.red;
+    if (strength < 0.75) return Colors.orange;
+    return Colors.green;
   }
 
   @override
@@ -51,364 +120,335 @@ class _AdminRegisterScreenState extends State<AdminRegisterScreen> {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSizes.xl),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Icon(
+                Icons.admin_panel_settings,
+                size: 80,
+                color: AppColors.primary,
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Admin User Registration',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Create a new administrator account with elevated privileges',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+
+              // Admin Authorization Code
+              TextFormField(
+                controller: _adminCodeController,
+                decoration: const InputDecoration(
+                  labelText: 'Admin Authorization Code *',
+                  hintText: 'Enter the admin authorization code',
+                  prefixIcon: Icon(Icons.security),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Admin authorization code is required';
+                  }
+                  if (value != 'ADMIN2025') {
+                    return 'Invalid admin authorization code';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+
+              // Role Selection
+              const Text(
+                'Admin Role Selection',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(height: 16),
+              
+              // Admin ComFunds Role
+              CheckboxListTile(
+                title: Text(
+                  UserRoles.getDisplayName(UserRoles.adminComfunds),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  UserRoles.getDescription(UserRoles.adminComfunds),
+                  style: const TextStyle(fontSize: 12),
+                ),
+                value: _selectedRoles.contains(UserRoles.adminComfunds),
+                onChanged: (bool? value) {
+                  setState(() {
+                    if (value == true) {
+                      _selectedRoles = [UserRoles.adminComfunds];
+                    } else {
+                      _selectedRoles.remove(UserRoles.adminComfunds);
+                    }
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+
+              // Admin Cooperative Role
+              CheckboxListTile(
+                title: Text(
+                  UserRoles.getDisplayName(UserRoles.adminCooperative),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  UserRoles.getDescription(UserRoles.adminCooperative),
+                  style: const TextStyle(fontSize: 12),
+                ),
+                value: _selectedRoles.contains(UserRoles.adminCooperative),
+                onChanged: (bool? value) {
+                  setState(() {
+                    if (value == true) {
+                      _selectedRoles = [UserRoles.adminCooperative];
+                    } else {
+                      _selectedRoles.remove(UserRoles.adminCooperative);
+                    }
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+
+              // UMKM Business Role
+              CheckboxListTile(
+                title: Text(
+                  UserRoles.getDisplayName(UserRoles.umkmBusiness),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  UserRoles.getDescription(UserRoles.umkmBusiness),
+                  style: const TextStyle(fontSize: 12),
+                ),
+                value: _selectedRoles.contains(UserRoles.umkmBusiness),
+                onChanged: (bool? value) {
+                  setState(() {
+                    if (value == true) {
+                      _selectedRoles = [UserRoles.umkmBusiness];
+                    } else {
+                      _selectedRoles.remove(UserRoles.umkmBusiness);
+                    }
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+
+              const SizedBox(height: 24),
+
+              // User Information Fields
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Full Name *',
+                  hintText: 'Enter your full name',
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Full name is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email *',
+                  hintText: 'Enter your email address',
+                  prefixIcon: Icon(Icons.email),
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is required';
+                  }
+                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Phone Number *',
+                  hintText: 'Enter your phone number',
+                  prefixIcon: Icon(Icons.phone),
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Phone number is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              TextFormField(
+                controller: _addressController,
+                decoration: const InputDecoration(
+                  labelText: 'Address *',
+                  hintText: 'Enter your full address',
+                  prefixIcon: Icon(Icons.location_on),
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Address is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // Password Field
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password *',
+                  hintText: 'Enter a strong password',
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
+                  border: const OutlineInputBorder(),
+                ),
+                obscureText: _obscurePassword,
+                onChanged: (value) {
+                  setState(() {});
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password is required';
+                  }
+                  if (!_isPasswordStrong(value)) {
+                    return 'Password must be at least 8 characters with uppercase, lowercase, number, and special character';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 8),
+
+              // Password Strength Indicator
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
-                  Text(
-                    'Admin Account Creation',
-                    style: AppTextStyles.h2.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSizes.sm),
-                  Text(
-                    'Create administrator account with enhanced privileges',
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSizes.xxl),
-
-                  // Name Field
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Full Name',
-                      prefixIcon: Icon(Icons.person),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Email Field
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Phone Field
-                  TextFormField(
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: const InputDecoration(
-                      labelText: 'Phone Number',
-                      prefixIcon: Icon(Icons.phone),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your phone number';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Address Field
-                  TextFormField(
-                    controller: _addressController,
-                    maxLines: 2,
-                    decoration: const InputDecoration(
-                      labelText: 'Address',
-                      prefixIcon: Icon(Icons.location_on),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your address';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Admin Code Field
-                  TextFormField(
-                    controller: _adminCodeController,
-                    obscureText: _obscureAdminCode,
-                    decoration: InputDecoration(
-                      labelText: 'Admin Authorization Code',
-                      prefixIcon: const Icon(Icons.security),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureAdminCode ? Icons.visibility : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscureAdminCode = !_obscureAdminCode;
-                          });
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter admin authorization code';
-                      }
-                      if (value != 'ADMIN2025') { // This should be configurable
-                        return 'Invalid admin authorization code';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Role Selection
-                  Container(
-                    padding: const EdgeInsets.all(AppSizes.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.background,
-                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                      border: Border.all(color: AppColors.primary.withOpacity(0.3)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Administrative Roles',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: AppSizes.sm),
-                        ...UserRoles.allRoles.map((role) {
-                          if (role == UserRoles.guest) return const SizedBox.shrink();
-                          return CheckboxListTile(
-                            title: Text(UserRoles.getDisplayName(role)),
-                            subtitle: Text(
-                              UserRoles.getDescription(role),
-                              style: AppTextStyles.bodySmall,
-                            ),
-                            value: _selectedRoles.contains(role),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                if (value == true) {
-                                  _selectedRoles.add(role);
-                                } else {
-                                  _selectedRoles.remove(role);
-                                }
-                              });
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
-                            contentPadding: EdgeInsets.zero,
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Password Field
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      if (value.length < 8) {
-                        return 'Password must be at least 8 characters';
-                      }
-                      if (!value.contains(RegExp(r'[A-Z]'))) {
-                        return 'Password must contain at least one uppercase letter';
-                      }
-                      if (!value.contains(RegExp(r'[a-z]'))) {
-                        return 'Password must contain at least one lowercase letter';
-                      }
-                      if (!value.contains(RegExp(r'[0-9]'))) {
-                        return 'Password must contain at least one number';
-                      }
-                      if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                        return 'Password must contain at least one special character';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Password Requirements
-                  Container(
-                    padding: const EdgeInsets.all(AppSizes.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.background,
-                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Password Requirements:',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: AppSizes.xs),
-                        _buildRequirement('At least 8 characters', _passwordController.text.length >= 8),
-                        _buildRequirement('One uppercase letter', _passwordController.text.contains(RegExp(r'[A-Z]'))),
-                        _buildRequirement('One lowercase letter', _passwordController.text.contains(RegExp(r'[a-z]'))),
-                        _buildRequirement('One number', _passwordController.text.contains(RegExp(r'[0-9]'))),
-                        _buildRequirement('One special character', _passwordController.text.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Register Button
-                  Consumer<AuthProvider>(
-                    builder: (context, authProvider, child) {
-                      return AppButton(
-                        text: 'Create Admin Account',
-                        isFullWidth: true,
-                        isLoading: authProvider.isLoading,
-                        onPressed: authProvider.isLoading ? null : _handleAdminRegister,
-                      );
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Error Message
-                  Consumer<AuthProvider>(
-                    builder: (context, authProvider, child) {
-                      if (authProvider.error != null) {
-                        return Container(
-                          padding: const EdgeInsets.all(AppSizes.md),
-                          decoration: BoxDecoration(
-                            color: AppColors.error.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-                          ),
-                          child: Text(
-                            authProvider.error!,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.error,
-                            ),
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-
-                  const SizedBox(height: AppSizes.lg),
-
-                  // Login Link
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      const Text('Password Strength:'),
                       Text(
-                        'Already have an account? ',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pushNamed(context, '/login'),
-                        child: Text(
-                          'Sign in',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        _getPasswordStrength(_passwordController.text) < 0.5 ? 'Weak' :
+                        _getPasswordStrength(_passwordController.text) < 0.75 ? 'Medium' : 'Strong',
+                        style: TextStyle(
+                          color: _getPasswordStrengthColor(_getPasswordStrength(_passwordController.text)),
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 8),
+                  LinearProgressIndicator(
+                    value: _getPasswordStrength(_passwordController.text),
+                    backgroundColor: Colors.grey[300],
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      _getPasswordStrengthColor(_getPasswordStrength(_passwordController.text)),
+                    ),
+                  ),
                 ],
               ),
-            ),
+
+              const SizedBox(height: 32),
+
+              // Submit Button
+              ElevatedButton(
+                onPressed: _isLoading ? null : _handleAdminRegister,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : const Text(
+                        'Create Admin Account',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Login Link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Already have an account? '),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pushReplacementNamed('/login'),
+                    child: const Text(
+                      'Login here',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
-  }
-
-  Widget _buildRequirement(String text, bool isMet) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSizes.xs),
-      child: Row(
-        children: [
-          Icon(
-            isMet ? Icons.check_circle : Icons.circle_outlined,
-            size: 16,
-            color: isMet ? AppColors.success : AppColors.textSecondary,
-          ),
-          const SizedBox(width: AppSizes.xs),
-          Text(
-            text,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: isMet ? AppColors.success : AppColors.textSecondary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _handleAdminRegister() async {
-    if (_formKey.currentState!.validate()) {
-      if (_selectedRoles.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please select at least one role'),
-            backgroundColor: AppColors.error,
-          ),
-        );
-        return;
-      }
-
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final success = await authProvider.register(
-        _nameController.text,
-        _emailController.text,
-        _passwordController.text,
-        _phoneController.text,
-        _addressController.text,
-        _selectedRoles,
-      );
-      
-      if (success && mounted) {
-        Navigator.pushReplacementNamed(context, '/dashboard');
-      }
-    }
   }
 }
