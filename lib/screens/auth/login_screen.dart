@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/constants.dart';
+import '../../utils/validation.dart';
 import '../../widgets/common/app_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -62,15 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       labelText: 'Email',
                       prefixIcon: Icon(Icons.email),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
+                    validator: ValidationUtils.validateEmail,
                   ),
                   const SizedBox(height: AppSizes.lg),
 
@@ -92,15 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
+                    validator: ValidationUtils.validateLoginPassword,
                   ),
                   const SizedBox(height: AppSizes.lg),
 

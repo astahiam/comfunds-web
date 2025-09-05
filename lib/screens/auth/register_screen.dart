@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/constants.dart';
 import '../../utils/role_constants.dart';
+import '../../utils/validation.dart';
 import '../../widgets/common/app_button.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -81,12 +82,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       labelText: 'Full Name',
                       prefixIcon: Icon(Icons.person),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
-                      }
-                      return null;
-                    },
+                    validator: ValidationUtils.validateName,
                   ),
                   const SizedBox(height: AppSizes.lg),
 
@@ -98,15 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       labelText: 'Email',
                       prefixIcon: Icon(Icons.email),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
+                    validator: ValidationUtils.validateEmail,
                   ),
                   const SizedBox(height: AppSizes.lg),
 
@@ -118,12 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       labelText: 'Phone Number',
                       prefixIcon: Icon(Icons.phone),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your phone number';
-                      }
-                      return null;
-                    },
+                    validator: ValidationUtils.validatePhone,
                   ),
                   const SizedBox(height: AppSizes.lg),
 
@@ -135,12 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       labelText: 'Address',
                       prefixIcon: Icon(Icons.location_on),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your address';
-                      }
-                      return null;
-                    },
+                    validator: ValidationUtils.validateAddress,
                   ),
                   const SizedBox(height: AppSizes.lg),
 
@@ -162,27 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      if (value.length < 8) {
-                        return 'Password must be at least 8 characters';
-                      }
-                      if (!value.contains(RegExp(r'[A-Z]'))) {
-                        return 'Password must contain at least one uppercase letter';
-                      }
-                      if (!value.contains(RegExp(r'[a-z]'))) {
-                        return 'Password must contain at least one lowercase letter';
-                      }
-                      if (!value.contains(RegExp(r'[0-9]'))) {
-                        return 'Password must contain at least one number';
-                      }
-                      if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                        return 'Password must contain at least one special character';
-                      }
-                      return null;
-                    },
+                    validator: ValidationUtils.validateRegistrationPassword,
                   ),
                   const SizedBox(height: AppSizes.lg),
 
@@ -204,11 +162,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         const SizedBox(height: AppSizes.xs),
-                        _buildRequirement('At least 8 characters', _passwordController.text.length >= 8),
-                        _buildRequirement('One uppercase letter', _passwordController.text.contains(RegExp(r'[A-Z]'))),
-                        _buildRequirement('One lowercase letter', _passwordController.text.contains(RegExp(r'[a-z]'))),
-                        _buildRequirement('One number', _passwordController.text.contains(RegExp(r'[0-9]'))),
-                        _buildRequirement('One special character', _passwordController.text.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))),
+                        ...ValidationUtils.checkPasswordStrength(_passwordController.text).entries.map((entry) {
+                          final requirementText = _getRequirementText(entry.key);
+                          return _buildRequirement(requirementText, entry.value);
+                        }).toList(),
                       ],
                     ),
                   ),
@@ -349,6 +306,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  String _getRequirementText(String key) {
+    switch (key) {
+      case 'hasMinLength':
+        return 'Minimal 8 karakter';
+      case 'hasUppercase':
+        return 'Satu huruf besar';
+      case 'hasLowercase':
+        return 'Satu huruf kecil';
+      case 'hasNumber':
+        return 'Satu angka';
+      case 'hasSpecialChar':
+        return 'Satu karakter khusus';
+      default:
+        return key;
+    }
   }
 
   Widget _buildRequirement(String text, bool isMet) {

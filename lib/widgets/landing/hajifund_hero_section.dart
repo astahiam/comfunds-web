@@ -233,15 +233,20 @@ class HajifundHeroSection extends StatelessWidget {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.rocket_launch, color: Colors.white, size: 20),
                     const SizedBox(width: 8),
-                    Text(
-                      'Mulai Investasi Sekarang',
-                      style: AppTextStyles.buttonLarge.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                    Flexible(
+                      child: Text(
+                        'Mulai Investasi Sekarang',
+                        style: AppTextStyles.buttonLarge.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -271,15 +276,20 @@ class HajifundHeroSection extends StatelessWidget {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.play_circle_outline, color: Colors.white, size: 20),
                     const SizedBox(width: 8),
-                    Text(
-                      'Lihat Cara Kerja',
-                      style: AppTextStyles.buttonLarge.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                    Flexible(
+                      child: Text(
+                        'Lihat Cara Kerja',
+                        style: AppTextStyles.buttonLarge.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
