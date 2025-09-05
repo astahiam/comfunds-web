@@ -10,44 +10,48 @@ class PembiayaanScreen extends StatefulWidget {
 }
 
 class _PembiayaanScreenState extends State<PembiayaanScreen> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
 
   final List<Map<String, dynamic>> _financingTypes = [
     {
-      'title': 'Pembiayaan UMKM',
-      'subtitle': 'Untuk pengembangan usaha mikro, kecil, dan menengah',
-      'icon': Icons.store,
+      'title': 'Pembiayaan UMKM Syariah',
+      'subtitle': 'Modal usaha untuk pengembangan UMKM sesuai prinsip syariah Islam',
+      'icon': Icons.store_mall_directory,
       'color': AppColors.primary,
       'features': [
-        'Plafon hingga Rp 500 juta',
+        'Plafon pembiayaan hingga Rp 500 juta',
         'Tenor fleksibel 12-60 bulan',
-        'Proses cepat 3-7 hari kerja',
+        'Proses persetujuan 3-7 hari kerja',
         'Tanpa agunan untuk nominal tertentu',
+        'Akad Mudharabah dan Musyarakah',
+        'Bebas riba dan sesuai fatwa DSN-MUI',
       ],
     },
     {
-      'title': 'Pembiayaan Perdagangan',
-      'subtitle': 'Modal kerja untuk aktivitas perdagangan',
-      'icon': Icons.shopping_cart,
+      'title': 'Usaha Kuliner Halal',
+      'subtitle': 'Pembiayaan khusus untuk pengembangan bisnis kuliner halal dan thayyib',
+      'icon': Icons.restaurant_menu,
       'color': AppColors.accent,
       'features': [
-        'Plafon hingga Rp 1 miliar',
-        'Tenor 6-36 bulan',
-        'Margin kompetitif',
-        'Proses approval yang cepat',
+        'Plafon pembiayaan hingga Rp 1 miliar',
+        'Tenor disesuaikan jenis usaha 6-36 bulan',
+        'Margin bagi hasil yang kompetitif',
+        'Sertifikasi halal MUI didukung',
+        'Konsultasi bisnis kuliner gratis',
+        'Jaringan distribusi halal terintegrasi',
       ],
     },
     {
-      'title': 'Pembiayaan Pertanian',
-      'subtitle': 'Mendukung sektor pertanian dan agribisnis',
-      'icon': Icons.agriculture,
+      'title': 'Pertanian Organic',
+      'subtitle': 'Dukungan modal untuk pertanian organik dan ramah lingkungan',
+      'icon': Icons.eco,
       'color': AppColors.success,
       'features': [
-        'Plafon disesuaikan kebutuhan',
-        'Tenor mengikuti siklus panen',
-        'Khusus sektor halal',
-        'Pendampingan teknis',
+        'Plafon disesuaikan kebutuhan lahan',
+        'Tenor mengikuti siklus tanam dan panen',
+        'Fokus pada produk halal dan organik',
+        'Pendampingan teknis dari ahli pertanian',
+        'Akses ke pasar premium organik',
+        'Program sustainability dan lingkungan',
       ],
     },
   ];
@@ -156,38 +160,39 @@ class _PembiayaanScreenState extends State<PembiayaanScreen> {
                     style: AppTextStyles.h3,
                   ),
                   const SizedBox(height: AppSizes.md),
-                  SizedBox(
-                    height: 400,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      onPageChanged: (index) {
-                        setState(() {
-                          _currentPage = index;
-                        });
-                      },
-                      itemCount: _financingTypes.length,
-                      itemBuilder: (context, index) {
-                        return _buildFinancingCard(_financingTypes[index]);
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: AppSizes.md),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      _financingTypes.length,
-                      (index) => Container(
-                        width: 8,
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _currentPage == index
-                              ? AppColors.primary
-                              : AppColors.textHint,
-                        ),
-                      ),
-                    ),
+                  
+                  // Mobile: Show cards in a scrollable column
+                  // Desktop: Show cards in a responsive grid
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth < AppSizes.breakpointTablet) {
+                        // Mobile Layout: Vertical scrollable cards
+                        return Column(
+                          children: _financingTypes.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final financing = entry.value;
+                            return Container(
+                              margin: EdgeInsets.only(
+                                bottom: index < _financingTypes.length - 1 ? AppSizes.lg : 0,
+                              ),
+                              child: _buildFinancingCard(financing),
+                            );
+                          }).toList(),
+                        );
+                      } else {
+                        // Desktop/Tablet Layout: Grid or horizontal cards
+                        return Wrap(
+                          spacing: AppSizes.lg,
+                          runSpacing: AppSizes.lg,
+                          children: _financingTypes.map((financing) {
+                            return SizedBox(
+                              width: (constraints.maxWidth - (AppSizes.lg * 2)) / 3,
+                              child: _buildFinancingCard(financing),
+                            );
+                          }).toList(),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
@@ -337,17 +342,24 @@ class _PembiayaanScreenState extends State<PembiayaanScreen> {
 
   Widget _buildFinancingCard(Map<String, dynamic> financing) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
+      width: double.infinity,
       padding: const EdgeInsets.all(AppSizes.lg),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusXl),
         boxShadow: AppShadows.md,
+        border: Border.all(
+          color: financing['color'].withOpacity(0.2),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          // Header with Icon and Title
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 padding: const EdgeInsets.all(AppSizes.md),
@@ -368,45 +380,79 @@ class _PembiayaanScreenState extends State<PembiayaanScreen> {
                   children: [
                     Text(
                       financing['title'],
-                      style: AppTextStyles.h4,
+                      style: AppTextStyles.h4.copyWith(
+                        color: financing['color'],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(height: AppSizes.xs),
                     Text(
                       financing['subtitle'],
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
                       ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
             ],
           ),
+          
           const SizedBox(height: AppSizes.lg),
-          Text(
-            'Keunggulan:',
-            style: AppTextStyles.labelLarge,
-          ),
-          const SizedBox(height: AppSizes.sm),
-          ...financing['features'].map<Widget>((feature) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSizes.xs),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.star,
-                      color: AppColors.secondary,
-                      size: 16,
-                    ),
-                    const SizedBox(width: AppSizes.sm),
-                    Expanded(
-                      child: Text(
-                        feature,
-                        style: AppTextStyles.bodyMedium,
-                      ),
-                    ),
-                  ],
+          
+          // Features Section
+          Container(
+            padding: const EdgeInsets.all(AppSizes.md),
+            decoration: BoxDecoration(
+              color: financing['color'].withOpacity(0.05),
+              borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Keunggulan:',
+                  style: AppTextStyles.labelLarge.copyWith(
+                    color: financing['color'],
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              )),
+                const SizedBox(height: AppSizes.sm),
+                ...financing['features'].map<Widget>((feature) => Padding(
+                      padding: const EdgeInsets.only(bottom: AppSizes.xs),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 2),
+                            child: Icon(
+                              Icons.check_circle,
+                              color: financing['color'],
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: AppSizes.sm),
+                          Expanded(
+                            child: Text(
+                              feature,
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
+              ],
+            ),
+          ),
+          
           const SizedBox(height: AppSizes.lg),
+          
+          // Action Button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -416,11 +462,19 @@ class _PembiayaanScreenState extends State<PembiayaanScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: financing['color'],
                 foregroundColor: AppColors.textOnPrimary,
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSizes.md,
+                  horizontal: AppSizes.lg,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSizes.radiusLg),
                 ),
+                elevation: 2,
               ),
-              child: const Text('Pelajari Lebih Lanjut'),
+              child: Text(
+                'Pelajari Lebih Lanjut',
+                style: AppTextStyles.buttonMedium,
+              ),
             ),
           ),
         ],

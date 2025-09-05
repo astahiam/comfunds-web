@@ -57,6 +57,9 @@ config/api_config.dart
 config/secrets.json
 config/database.json
 config/auth_config.json
+lib/config/api_config.dart
+lib/config/credentials.dart
+lib/config/secrets.dart
 credentials/
 secrets/
 private/
