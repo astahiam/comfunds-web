@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../config/api_config.dart';
 
 class ApiService {
-  static String get baseUrl => ApiConfig.baseUrl;
+  static String get baseUrl => 'http://localhost:8080/api/v1';
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
   
   // HTTP Headers

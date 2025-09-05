@@ -12,6 +12,10 @@ import 'screens/business/create_business_screen.dart';
 import 'screens/projects/create_project_screen.dart';
 import 'screens/projects/projects_screen.dart';
 import 'screens/investment/investment_screen.dart';
+import 'screens/pages/beranda_screen.dart';
+import 'screens/pages/investasi_screen.dart';
+import 'screens/pages/pembiayaan_screen.dart';
+import 'screens/pages/kontak_screen.dart';
 import 'utils/role_constants.dart';
 
 void main() {
@@ -61,6 +65,10 @@ class MyApp extends StatelessWidget {
             '/create-project': (context) => const CreateProjectScreen(),
             '/projects': (context) => const ProjectsScreen(),
             '/investment': (context) => const InvestmentScreen(),
+            '/beranda': (context) => const BerandaScreen(),
+            '/investasi': (context) => const InvestasiScreen(),
+            '/pembiayaan': (context) => const PembiayaanScreen(),
+            '/kontak': (context) => const KontakScreen(),
           },
         );
       },

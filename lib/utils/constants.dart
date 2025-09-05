@@ -46,6 +46,7 @@ class AppColors {
   // Neutral Colors (HAJIFUND Design System)
   static const Color background = Color(0xFFFAFBFC); // Off-white background
   static const Color surface = Color(0xFFFFFFFF); // Pure white
+  static const Color surfaceVariant = Color(0xFFF5F5F5); // Light gray surface
   static const Color card = Color(0xFFFFFFFF); // Card background
   static const Color divider = Color(0xFFE5E7EB); // Light gray divider
   

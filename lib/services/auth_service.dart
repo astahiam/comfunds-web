@@ -3,9 +3,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/user.dart';
 import 'api_service.dart';
+import 'mock_api_service.dart';
 
 class AuthService {
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
+  static const bool useMockBackend = false; // Set to false when real backend is available
 
   // Register new user
   static Future<User> register({
@@ -18,17 +20,32 @@ class AuthService {
     required List<String> roles,
   }) async {
     try {
-      final response = await ApiService.post('/auth/register', {
-        'email': email,
-        'password': password,
-        'name': name,
-        'phone': phone,
-        'address': address,
-        if (cooperativeId != null && cooperativeId.isNotEmpty) 'cooperative_id': cooperativeId,
-        'roles': roles,
-      });
-
-      final data = ApiService.parseResponse(response);
+      Map<String, dynamic> data;
+      
+      if (useMockBackend) {
+        // Use mock backend
+        data = await MockApiService.register(
+          email: email,
+          password: password,
+          name: name,
+          phone: phone,
+          address: address,
+          cooperativeId: cooperativeId,
+          roles: roles,
+        );
+      } else {
+        // Use real backend
+        final response = await ApiService.post('/auth/register', {
+          'email': email,
+          'password': password,
+          'name': name,
+          'phone': phone,
+          'address': address,
+          if (cooperativeId != null && cooperativeId.isNotEmpty) 'cooperative_id': cooperativeId,
+          'roles': roles,
+        });
+        data = ApiService.parseResponse(response);
+      }
       
       // Store tokens if provided
       if (data['data'] != null && data['data']['access_token'] != null) {
@@ -38,7 +55,11 @@ class AuthService {
       
       return User.fromJson(data['data']['user']);
     } catch (e) {
-      throw Exception(ApiService.handleError(e));
+      if (useMockBackend) {
+        throw Exception(e.toString().replaceAll('Exception: ', ''));
+      } else {
+        throw Exception(ApiService.handleError(e));
+      }
     }
   }
 
@@ -48,12 +69,22 @@ class AuthService {
     required String password,
   }) async {
     try {
-      final response = await ApiService.post('/auth/login', {
-        'email': email,
-        'password': password,
-      });
-
-      final data = ApiService.parseResponse(response);
+      Map<String, dynamic> data;
+      
+      if (useMockBackend) {
+        // Use mock backend
+        data = await MockApiService.login(
+          email: email,
+          password: password,
+        );
+      } else {
+        // Use real backend
+        final response = await ApiService.post('/auth/login', {
+          'email': email,
+          'password': password,
+        });
+        data = ApiService.parseResponse(response);
+      }
       
       // Store tokens
       await _storage.write(key: 'auth_token', value: data['data']['access_token']);
@@ -65,7 +96,11 @@ class AuthService {
         'refresh_token': data['data']['refresh_token'],
       };
     } catch (e) {
-      throw Exception(ApiService.handleError(e));
+      if (useMockBackend) {
+        throw Exception(e.toString().replaceAll('Exception: ', ''));
+      } else {
+        throw Exception(ApiService.handleError(e));
+      }
     }
   }
 

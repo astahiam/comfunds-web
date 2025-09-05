@@ -308,83 +308,65 @@ class HajifundHeroSection extends StatelessWidget {
   
   Widget _buildInvestmentDashboard() {
     return Container(
-      height: 500,
-      child: Stack(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment.center,
+          radius: 0.8,
+          colors: [
+            Colors.white.withOpacity(0.1),
+            Colors.transparent,
+          ],
+        ),
+      ),
+      child: Column(
         children: [
-          // Background glow
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment.center,
-                  radius: 0.8,
-                  colors: [
-                    Colors.white.withOpacity(0.1),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
+          const SizedBox(height: AppSizes.lg),
+          
+          // Investment Cards - Proper vertical layout
+          _buildHajifundInvestmentCard(
+            'UMKM Syariah Terpercaya',
+            'Rp 200.000.000',
+            '15.5%',
+            '94%',
+            const Color(0xFF4CAF50),
+            Icons.store,
           ),
           
-          // HAJIFUND Investment Cards
-          Positioned(
-            top: 40,
-            left: 20,
-            child: _buildHajifundInvestmentCard(
-              'Pembiayaan UMKM Syariah',
-              'Rp 200.000.000',
-              '15.5%',
-              '94%',
-              const Color(0xFF4CAF50),
-              Icons.store,
-            ),
+          const SizedBox(height: AppSizes.lg),
+          
+          _buildHajifundInvestmentCard(
+            'Proyek Pertanian Organik',
+            'Rp 150.000.000',
+            '16.2%',
+            '87%',
+            const Color(0xFF2196F3),
+            Icons.agriculture,
           ),
           
-          Positioned(
-            top: 160,
-            right: 30,
-            child: _buildHajifundInvestmentCard(
-              'Proyek Pertanian Organik',
-              'Rp 150.000.000',
-              '16.2%',
-              '87%',
-              const Color(0xFF2196F3),
-              Icons.agriculture,
-            ),
+          const SizedBox(height: AppSizes.lg),
+          
+          _buildHajifundInvestmentCard(
+            'Usaha Kuliner Halal',
+            'Rp 100.000.000',
+            '17.8%',
+            '92%',
+            const Color(0xFFFF9800),
+            Icons.restaurant,
           ),
           
-          Positioned(
-            bottom: 100,
-            left: 40,
-            child: _buildHajifundInvestmentCard(
-              'Usaha Kuliner Halal',
-              'Rp 100.000.000',
-              '17.8%',
-              '92%',
-              const Color(0xFFFF9800),
-              Icons.restaurant,
-            ),
+          const SizedBox(height: AppSizes.xl),
+          
+          // Badges in a row instead of positioned
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildShariaBadge(),
+              _buildReturnIndicator(),
+              _buildSecurityBadge(),
+            ],
           ),
           
-          // Floating badges
-          Positioned(
-            top: 80,
-            right: 80,
-            child: _buildShariaBadge(),
-          ),
-          
-          Positioned(
-            bottom: 180,
-            right: 40,
-            child: _buildReturnIndicator(),
-          ),
-          
-          Positioned(
-            top: 300,
-            left: 20,
-            child: _buildSecurityBadge(),
-          ),
+          const SizedBox(height: AppSizes.lg),
         ],
       ),
     );

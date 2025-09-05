@@ -200,7 +200,7 @@ class HajifundLogoDark extends StatelessWidget {
     super.key,
     this.width,
     this.height,
-    this.showText: true,
+    this.showText = true,
     this.isCompact = false,
   });
 

@@ -45,11 +45,11 @@ class HajifundNavigation extends StatelessWidget {
             
             // Navigation Menu
             if (MediaQuery.of(context).size.width > 768) ...[
-              _buildNavItem('Beranda', () => onSectionTap?.call('home')),
-              _buildNavItem('Investasi', () => onSectionTap?.call('investment')),
-              _buildNavItem('Pembiayaan', () => onSectionTap?.call('financing')),
+              _buildNavItem('Beranda', () => Navigator.pushNamed(context, '/beranda')),
+              _buildNavItem('Investasi', () => Navigator.pushNamed(context, '/investasi')),
+              _buildNavItem('Pembiayaan', () => Navigator.pushNamed(context, '/pembiayaan')),
               _buildNavItem('Tentang', () => onSectionTap?.call('about')),
-              _buildNavItem('Kontak', () => onSectionTap?.call('contact')),
+              _buildNavItem('Kontak', () => Navigator.pushNamed(context, '/kontak')),
               
               const SizedBox(width: AppSizes.lg),
               
@@ -224,15 +224,15 @@ class HajifundNavigation extends StatelessWidget {
             // Menu Items
             _buildMobileMenuItem('Beranda', Icons.home, () {
               Navigator.pop(context);
-              onSectionTap?.call('home');
+              Navigator.pushNamed(context, '/beranda');
             }),
             _buildMobileMenuItem('Investasi', Icons.trending_up, () {
               Navigator.pop(context);
-              onSectionTap?.call('investment');
+              Navigator.pushNamed(context, '/investasi');
             }),
             _buildMobileMenuItem('Pembiayaan', Icons.account_balance_wallet, () {
               Navigator.pop(context);
-              onSectionTap?.call('financing');
+              Navigator.pushNamed(context, '/pembiayaan');
             }),
             _buildMobileMenuItem('Tentang', Icons.info_outline, () {
               Navigator.pop(context);
@@ -240,7 +240,7 @@ class HajifundNavigation extends StatelessWidget {
             }),
             _buildMobileMenuItem('Kontak', Icons.contact_phone, () {
               Navigator.pop(context);
-              onSectionTap?.call('contact');
+              Navigator.pushNamed(context, '/kontak');
             }),
             
             const SizedBox(height: AppSizes.lg),

@@ -161,32 +161,56 @@ class _PembiayaanScreenState extends State<PembiayaanScreen> {
                   ),
                   const SizedBox(height: AppSizes.md),
                   
-                  // Mobile: Show cards in a scrollable column
-                  // Desktop: Show cards in a responsive grid
+                  // Responsive Layout for Financing Cards
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      if (constraints.maxWidth < AppSizes.breakpointTablet) {
-                        // Mobile Layout: Vertical scrollable cards
+                      final screenWidth = constraints.maxWidth;
+                      
+                      if (screenWidth < AppSizes.breakpointTablet) {
+                        // Mobile Layout: Single column with proper spacing
                         return Column(
                           children: _financingTypes.asMap().entries.map((entry) {
                             final index = entry.key;
                             final financing = entry.value;
                             return Container(
+                              width: double.infinity,
                               margin: EdgeInsets.only(
-                                bottom: index < _financingTypes.length - 1 ? AppSizes.lg : 0,
+                                bottom: index < _financingTypes.length - 1 ? AppSizes.xl : 0,
+                              ),
+                              child: _buildFinancingCard(financing),
+                            );
+                          }).toList(),
+                        );
+                      } else if (screenWidth < AppSizes.breakpointDesktop) {
+                        // Tablet Layout: 2 columns
+                        return Wrap(
+                          spacing: AppSizes.xl,
+                          runSpacing: AppSizes.xl,
+                          alignment: WrapAlignment.center,
+                          children: _financingTypes.map((financing) {
+                            return Container(
+                              width: (screenWidth - AppSizes.xl * 3) / 2, // 2 columns with spacing
+                              constraints: BoxConstraints(
+                                minWidth: 300,
+                                maxWidth: 450,
                               ),
                               child: _buildFinancingCard(financing),
                             );
                           }).toList(),
                         );
                       } else {
-                        // Desktop/Tablet Layout: Grid or horizontal cards
+                        // Desktop Layout: 3 columns with proper spacing
                         return Wrap(
-                          spacing: AppSizes.lg,
-                          runSpacing: AppSizes.lg,
+                          spacing: AppSizes.xl,
+                          runSpacing: AppSizes.xl,
+                          alignment: WrapAlignment.start,
                           children: _financingTypes.map((financing) {
-                            return SizedBox(
-                              width: (constraints.maxWidth - (AppSizes.lg * 2)) / 3,
+                            return Container(
+                              width: (screenWidth - AppSizes.xl * 4) / 3, // 3 columns with proper spacing
+                              constraints: BoxConstraints(
+                                minWidth: 280,
+                                maxWidth: 400,
+                              ),
                               child: _buildFinancingCard(financing),
                             );
                           }).toList(),
@@ -344,6 +368,7 @@ class _PembiayaanScreenState extends State<PembiayaanScreen> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSizes.lg),
+      margin: const EdgeInsets.all(AppSizes.xs), // Add margin to prevent touching
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusXl),
