@@ -191,4 +191,14 @@ class InvestmentProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<List<Investment>> getProjectInvestments(String projectId) async {
+    try {
+      return await InvestmentService.getProjectInvestments(projectId);
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return [];
+    }
+  }
 }

@@ -19,12 +19,12 @@ class InvestmentsScreen extends StatelessWidget {
               size: 64,
               color: AppColors.textSecondary,
             ),
-            SizedBox(height: AppSizes.lg),
+            const SizedBox(height: AppSizes.lg),
             Text(
               'Investments Screen',
               style: AppTextStyles.h4,
             ),
-            SizedBox(height: AppSizes.md),
+            const SizedBox(height: AppSizes.md),
             Text(
               'Coming soon...',
               style: AppTextStyles.bodyLarge,

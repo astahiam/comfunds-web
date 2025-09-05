@@ -1,0 +1,73 @@
+# HAJIFUND Environment Configuration Template
+# Copy this file to .env in the root directory and fill in your actual values
+# NEVER commit .env files to version control
+
+# Application Environment
+ENVIRONMENT=development
+APP_NAME=HAJIFUND
+APP_VERSION=1.0.0
+
+# API Configuration
+API_BASE_URL=http://localhost:8080/api/v1
+API_TIMEOUT=30000
+
+# Database Configuration
+DATABASE_URL=postgresql://username:password@localhost:5432/hajifund_db
+REDIS_URL=redis://localhost:6379
+
+# Security Keys (Generate strong random keys for production)
+JWT_SECRET=your-super-secret-jwt-key-here
+ENCRYPTION_KEY=your-32-character-encryption-key-here
+SESSION_SECRET=your-session-secret-key-here
+
+# Third-party API Keys
+GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+FIREBASE_API_KEY=your-firebase-api-key
+FIREBASE_PROJECT_ID=your-firebase-project-id
+FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+
+# SMS Service (for OTP)
+SMS_API_KEY=your-sms-service-api-key
+SMS_API_URL=https://api.smsservice.com/v1
+
+# Email Service
+EMAIL_API_KEY=your-email-service-api-key
+EMAIL_FROM=noreply@hajifund.com
+SMTP_HOST=smtp.hajifund.com
+SMTP_PORT=587
+SMTP_USERNAME=your-smtp-username
+SMTP_PASSWORD=your-smtp-password
+
+# Payment Gateway
+PAYMENT_GATEWAY_URL=https://api.paymentgateway.com/v1
+PAYMENT_GATEWAY_KEY=your-payment-gateway-key
+PAYMENT_GATEWAY_SECRET=your-payment-gateway-secret
+
+# File Storage
+STORAGE_BUCKET=hajifund-storage
+STORAGE_REGION=us-east-1
+AWS_ACCESS_KEY_ID=your-aws-access-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+
+# Monitoring and Analytics
+SENTRY_DSN=your-sentry-dsn
+GOOGLE_ANALYTICS_ID=your-google-analytics-id
+
+# Social Media Integration
+FACEBOOK_APP_ID=your-facebook-app-id
+TWITTER_API_KEY=your-twitter-api-key
+INSTAGRAM_ACCESS_TOKEN=your-instagram-token
+
+# Development Settings
+DEBUG_MODE=true
+LOG_LEVEL=debug
+ENABLE_CORS=true
+
+# Security Settings
+ENABLE_SSL=true
+ENABLE_RATE_LIMITING=true
+MAX_REQUESTS_PER_MINUTE=60
+
+# Backup and Maintenance
+BACKUP_SCHEDULE=daily
+MAINTENANCE_MODE=false

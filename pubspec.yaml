@@ -1,5 +1,5 @@
 name: comfunds_web
-description: ComFunds Web Application - Sharia-Compliant Crowdfunding Platform
+description: HAJIFUND Web Application - P2P Lending Syariah Platform
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -21,6 +21,7 @@ dependencies:
   intl: ^0.20.2
   url_launcher: ^6.2.1
   webview_flutter: ^4.4.2
+  google_fonts: ^6.1.0
   flutter_localizations:
     sdk: flutter
 

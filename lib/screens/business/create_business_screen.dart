@@ -142,30 +142,26 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
         throw Exception('User not authenticated');
       }
 
-      final business = Business(
-        id: '',
+      await businessProvider.createBusiness(
         name: _nameController.text,
-        description: _descriptionController.text,
         businessType: _selectedBusinessType ?? '',
-        industry: _selectedIndustry ?? '',
-        address: _addressController.text,
-        phone: _phoneController.text,
-        email: _emailController.text,
-        website: _websiteController.text,
-        registrationNumber: _registrationNumberController.text,
-        taxId: _taxIdController.text,
-        bankAccount: _bankAccountController.text,
-        bankName: _bankNameController.text,
-        annualRevenue: double.tryParse(_annualRevenueController.text) ?? 0.0,
-        employeeCount: int.tryParse(_employeeCountController.text) ?? 0,
-        status: 'pending',
+        description: _descriptionController.text,
         ownerId: user.id,
         cooperativeId: _selectedCooperativeId!,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        registrationDocuments: {
+          'industry': _selectedIndustry ?? '',
+          'address': _addressController.text,
+          'phone': _phoneController.text,
+          'email': _emailController.text,
+          'website': _websiteController.text,
+          'registration_number': _registrationNumberController.text,
+          'tax_id': _taxIdController.text,
+          'bank_account': _bankAccountController.text,
+          'bank_name': _bankNameController.text,
+          'annual_revenue': double.tryParse(_annualRevenueController.text) ?? 0.0,
+          'employee_count': int.tryParse(_employeeCountController.text) ?? 0,
+        },
       );
-
-      await businessProvider.createBusiness(business);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -384,7 +380,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                 value: _selectedIndustry,
                 decoration: const InputDecoration(
                   labelText: 'Industry *',
-                  prefixIcon: Icon(Icons.industry),
+                  prefixIcon: Icon(Icons.factory),
                   border: OutlineInputBorder(),
                 ),
                 items: _industries.map((industry) {

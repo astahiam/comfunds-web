@@ -11,10 +11,10 @@ import 'providers/business_provider.dart';
 import 'utils/constants.dart';
 
 void main() {
-  runApp(const ComFundsApp());
+  runApp(const HajifundApp());
 }
-class ComFundsApp extends StatelessWidget {
-  const ComFundsApp({super.key});
+class HajifundApp extends StatelessWidget {
+  const HajifundApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class ComFundsApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            home: const App(),
+            home: const MyApp(),
           );
         },
       ),

@@ -98,7 +98,7 @@ class _InvestmentScreenState extends State<InvestmentScreen> {
                       label: Text('Available Projects'),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.portfolio),
+                      icon: Icon(Icons.account_balance_wallet),
                       label: Text('My Investments'),
                     ),
                     NavigationRailDestination(
@@ -258,7 +258,7 @@ class _InvestmentScreenState extends State<InvestmentScreen> {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () => _showInvestmentDialog(project),
-                icon: const Icon(Icons.investment),
+                icon: const Icon(Icons.trending_up),
                 label: const Text('Invest Now'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
@@ -343,7 +343,7 @@ class _InvestmentScreenState extends State<InvestmentScreen> {
         leading: CircleAvatar(
           backgroundColor: AppColors.primary.withOpacity(0.1),
           child: Icon(
-            Icons.investment,
+            Icons.trending_up,
             color: AppColors.primary,
           ),
         ),

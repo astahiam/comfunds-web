@@ -418,8 +418,8 @@ class _CooperativeAdminDashboardScreenState extends State<CooperativeAdminDashbo
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(cooperative.description),
-            Text('Status: ${cooperative.status}'),
+            Text(cooperative.address),
+            Text('Active: ${cooperative.isActive ? "Yes" : "No"}'),
           ],
         ),
         trailing: PopupMenuButton(
@@ -533,7 +533,7 @@ class _CooperativeAdminDashboardScreenState extends State<CooperativeAdminDashbo
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(business.description),
+            Text(business.description ?? 'No description'),
             Text('Type: ${business.businessType}'),
             Text('Status: ${business.approvalStatus}'),
           ],

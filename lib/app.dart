@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
-import 'providers/theme_provider.dart';
-import 'providers/project_provider.dart';
-import 'providers/investment_provider.dart';
-import 'providers/cooperative_provider.dart';
-import 'providers/business_provider.dart';
 import 'screens/landing/landing_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
@@ -14,8 +9,9 @@ import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/admin/admin_dashboard_screen.dart';
 import 'screens/admin/cooperative_admin_dashboard_screen.dart';
 import 'screens/business/create_business_screen.dart';
+import 'screens/projects/create_project_screen.dart';
+import 'screens/projects/projects_screen.dart';
 import 'screens/investment/investment_screen.dart';
-import 'models/user.dart';
 import 'utils/role_constants.dart';
 
 void main() {
@@ -27,67 +23,48 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => ProjectProvider()),
-        ChangeNotifierProvider(create: (_) => InvestmentProvider()),
-        ChangeNotifierProvider(create: (_) => CooperativeProvider()),
-        ChangeNotifierProvider(create: (_) => BusinessProvider()),
-      ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return MaterialApp(
-            title: 'ComFunds',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.green,
-                brightness: themeProvider.isDarkMode ? Brightness.dark : Brightness.light,
-              ),
-              useMaterial3: true,
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, child) {
+        final user = authProvider.user;
+        Widget initialScreen;
+        
+        if (user == null) {
+          initialScreen = const LandingScreen();
+        } else if (user.roles.contains(UserRoles.adminComfunds)) {
+          initialScreen = const AdminDashboardScreen();
+        } else if (user.roles.contains(UserRoles.adminCooperative)) {
+          initialScreen = const CooperativeAdminDashboardScreen();
+        } else if (user.roles.contains(UserRoles.admin) || user.roles.contains(UserRoles.cooperativeAdmin)) {
+          initialScreen = const AdminDashboardScreen();
+        } else {
+          initialScreen = const DashboardScreen();
+        }
+        
+        return MaterialApp(
+          title: 'ComFunds',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.green,
+              brightness: Brightness.light,
             ),
-            home: Consumer<AuthProvider>(
-              builder: (context, authProvider, child) {
-                return _getInitialRoute(authProvider.user);
-              },
-            ),
-            routes: {
-              '/': (context) => const LandingScreen(),
-              '/login': (context) => const LoginScreen(),
-              '/register': (context) => const RegisterScreen(),
-              '/admin-register': (context) => const AdminRegisterScreen(),
-              '/dashboard': (context) => const DashboardScreen(),
-              '/admin-dashboard': (context) => const AdminDashboardScreen(),
-              '/cooperative-admin-dashboard': (context) => const CooperativeAdminDashboardScreen(),
-              '/create-business': (context) => const CreateBusinessScreen(),
-              '/investment': (context) => const InvestmentScreen(),
-            },
-          );
-        },
-      ),
+            useMaterial3: true,
+          ),
+          home: initialScreen,
+          routes: {
+            '/login': (context) => const LoginScreen(),
+            '/register': (context) => const RegisterScreen(),
+            '/admin-register': (context) => const AdminRegisterScreen(),
+            '/dashboard': (context) => const DashboardScreen(),
+            '/admin-dashboard': (context) => const AdminDashboardScreen(),
+            '/cooperative-admin-dashboard': (context) => const CooperativeAdminDashboardScreen(),
+            '/create-business': (context) => const CreateBusinessScreen(),
+            '/create-project': (context) => const CreateProjectScreen(),
+            '/projects': (context) => const ProjectsScreen(),
+            '/investment': (context) => const InvestmentScreen(),
+          },
+        );
+      },
     );
   }
 
-  String _getInitialRoute(User? user) {
-    if (user == null) {
-      return '/';
-    }
-
-    // Check if user has admin roles
-    if (user.roles.contains(UserRoles.adminComfunds)) {
-      return '/admin-dashboard';
-    }
-    
-    if (user.roles.contains(UserRoles.adminCooperative)) {
-      return '/cooperative-admin-dashboard';
-    }
-    
-    if (user.roles.contains(UserRoles.admin) || user.roles.contains(UserRoles.cooperativeAdmin)) {
-      return '/admin-dashboard';
-    }
-
-    // Regular users go to dashboard
-    return '/dashboard';
-  }
 }

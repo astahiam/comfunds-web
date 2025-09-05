@@ -52,12 +52,12 @@ class _AdminRegisterScreenState extends State<AdminRegisterScreen> {
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       await authProvider.register(
-        email: _emailController.text,
-        password: _passwordController.text,
-        name: _nameController.text,
-        phone: _phoneController.text,
-        address: _addressController.text,
-        roles: _selectedRoles,
+        _nameController.text,
+        _emailController.text,
+        _passwordController.text,
+        _phoneController.text,
+        _addressController.text,
+        _selectedRoles,
       );
 
       if (mounted) {

@@ -84,4 +84,19 @@ class Cooperative {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  static Cooperative empty() {
+    return Cooperative(
+      id: '',
+      name: '',
+      registrationNumber: '',
+      address: '',
+      phone: '',
+      email: '',
+      bankAccount: '',
+      isActive: false,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+  }
 }

@@ -62,12 +62,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        return Scaffold(
-          appBar: AppBar(
+    return Scaffold(
+      appBar: AppBar(
             title: const Text('ComFunds Dashboard'),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.notifications),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
                 onPressed: () {
                   // TODO: Show notifications
                 },
@@ -223,13 +223,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildOverviewTab(User user) {
-    return SingleChildScrollView(
+          return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Welcome back, ${user.name}!',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Welcome back, ${user.name}!',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           const SizedBox(height: 24),
@@ -241,7 +241,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                      Text(
                     'Your Roles',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
@@ -262,7 +262,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           
           // Quick Stats
           Row(
-            children: [
+                  children: [
               Expanded(child: _buildStatCard('Total Investments', '0', Icons.account_balance_wallet)),
               const SizedBox(width: 16),
               Expanded(child: _buildStatCard('Active Projects', '0', Icons.work)),
@@ -274,27 +274,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 24),
           
           // Recent Activity
-          Card(
-            child: Padding(
+                Card(
+                  child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
                     'Recent Activity',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 16),
                   const Center(
                     child: Text('No recent activity'),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   Widget _buildStatCard(String title, String value, IconData icon) {
@@ -396,7 +396,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // TODO: Navigate to create business
+                      Navigator.of(context).pushNamed('/create-business');
                     },
                     icon: const Icon(Icons.add),
                     label: const Text('Add Business'),
@@ -461,7 +461,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // TODO: Navigate to create project
+                      Navigator.of(context).pushNamed('/create-project');
                     },
                     icon: const Icon(Icons.add),
                     label: const Text('Create Project'),
@@ -504,7 +504,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     );
                   },
-                ),
+              ),
             ],
           ),
         );
@@ -539,8 +539,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
               Text(
                 'Cooperatives',
                 style: Theme.of(context).textTheme.headlineMedium,
@@ -584,27 +584,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildInvestmentsTab() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.trending_up, size: 64, color: Colors.blue),
-          SizedBox(height: 16),
-          Text(
+          const Icon(Icons.trending_up, size: 64, color: Colors.blue),
+          const SizedBox(height: 16),
+          const Text(
             'Investment Dashboard',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8),
-          Text(
+          const SizedBox(height: 8),
+          const Text(
             'View and manage your investments in cooperative projects',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () => Navigator.of(context).pushNamed('/investment'),
-            icon: Icon(Icons.open_in_new),
-            label: Text('Go to Investment Dashboard'),
+            icon: const Icon(Icons.open_in_new),
+            label: const Text('Go to Investment Dashboard'),
           ),
         ],
       ),
@@ -612,27 +612,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildCreateBusinessTab() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.add_business, size: 64, color: Colors.green),
-          SizedBox(height: 16),
-          Text(
+          const Icon(Icons.add_business, size: 64, color: Colors.green),
+          const SizedBox(height: 16),
+          const Text(
             'Create New Business',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8),
-          Text(
+          const SizedBox(height: 8),
+          const Text(
             'Start a new UMKM business within your cooperative',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () => Navigator.of(context).pushNamed('/create-business'),
-            icon: Icon(Icons.add),
-            label: Text('Create Business'),
+            icon: const Icon(Icons.add),
+            label: const Text('Create Business'),
           ),
         ],
       ),

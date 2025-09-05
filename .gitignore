@@ -43,3 +43,82 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Security - Credentials and Environment Files
+# NEVER commit these files to version control
+.env
+.env.local
+.env.development
+.env.staging
+.env.production
+.env.test
+config/credentials.dart
+config/api_config.dart
+config/secrets.json
+config/database.json
+config/auth_config.json
+credentials/
+secrets/
+private/
+*.key
+*.pem
+*.p12
+*.keystore
+*.jks
+
+# Test credentials and user data
+test_credentials.json
+user_passwords.txt
+admin_users.json
+test_users.json
+
+# Logs that might contain sensitive information
+*.log
+logs/
+debug.log
+error.log
+access.log
+
+# Temporary files that might contain credentials
+temp_*
+tmp_*
+*.tmp
+*.temp
+
+# IDE and Editor files that might contain secrets
+.vscode/settings.json
+.idea/workspace.xml
+.idea/tasks.xml
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Flutter web build (contains compiled code)
+/build/web/
+
+# Coverage reports (may contain sensitive paths)
+/coverage/
+coverage.json
+lcov.info
+
+# Firebase and other service configurations
+firebase_options.dart
+google-services.json
+GoogleService-Info.plist
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*~

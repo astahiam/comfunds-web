@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 
-class FeaturesSection extends StatelessWidget {
-  const FeaturesSection({super.key});
+class HajifundFeaturesSection extends StatelessWidget {
+  const HajifundFeaturesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,26 +11,19 @@ class FeaturesSection extends StatelessWidget {
         horizontal: AppSizes.xl,
         vertical: AppSizes.xxl * 2,
       ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppColors.background,
-            const Color(0xFFF8F9FA),
-          ],
-        ),
+      decoration: const BoxDecoration(
+        color: Colors.white,
       ),
       child: Column(
         children: [
-          // Enhanced Section Header
+          // HAJIFUND-style Section Header
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSizes.lg,
               vertical: AppSizes.sm,
             ),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: const Color(0xFFE8F5E8),
               borderRadius: BorderRadius.circular(30),
             ),
             child: Text(
@@ -56,7 +49,7 @@ class FeaturesSection extends StatelessWidget {
               children: [
                 const TextSpan(text: 'Mengapa Memilih '),
                 TextSpan(
-                  text: 'ComFunds',
+                  text: 'P2P Lending Syariah',
                   style: TextStyle(
                     color: AppColors.primary,
                   ),
@@ -69,9 +62,9 @@ class FeaturesSection extends StatelessWidget {
           const SizedBox(height: AppSizes.lg),
           
           Container(
-            constraints: const BoxConstraints(maxWidth: 600),
+            constraints: const BoxConstraints(maxWidth: 700),
             child: Text(
-              'Rasakan masa depan pembiayaan koperasi dengan platform komprehensif kami yang dirancang khusus untuk investasi sesuai syariah Islam.',
+              'Platform peer-to-peer lending syariah yang menghubungkan pendana dengan peminjam berdasarkan prinsip keuangan Islam yang adil dan transparan.',
               textAlign: TextAlign.center,
               style: AppTextStyles.bodyLarge.copyWith(
                 color: AppColors.textSecondary,
@@ -83,7 +76,7 @@ class FeaturesSection extends StatelessWidget {
           
           const SizedBox(height: AppSizes.xxl),
           
-          // Enhanced Features Grid
+          // HAJIFUND-style Features Grid
           LayoutBuilder(
             builder: (context, constraints) {
               return GridView.count(
@@ -96,59 +89,59 @@ class FeaturesSection extends StatelessWidget {
                 mainAxisSpacing: AppSizes.xl,
                 childAspectRatio: constraints.maxWidth > 768 ? 1.1 : 1.3,
                 children: const [
-                  ModernFeatureCard(
+                  HajifundFeatureCard(
                     icon: Icons.mosque,
-                    title: '100% Halal',
-                    description: 'Semua investasi mengikuti prinsip keuangan Islam dengan mekanisme bagi hasil yang transparan.',
+                    title: 'Akad Syariah',
+                    description: 'Menggunakan akad mudharabah dan musyarakah yang sesuai dengan prinsip syariah Islam.',
                     color: Color(0xFF4CAF50),
                     gradient: [Color(0xFF4CAF50), Color(0xFF81C784)],
                   ),
-                  ModernFeatureCard(
+                  HajifundFeatureCard(
                     icon: Icons.security,
-                    title: 'Aman & Teregulasi',
-                    description: 'Keamanan setara bank dengan kepatuhan regulasi dan jejak audit komprehensif.',
+                    title: 'Terdaftar OJK',
+                    description: 'Terdaftar dan diawasi oleh Otoritas Jasa Keuangan untuk keamanan investasi Anda.',
                     color: Color(0xFF2196F3),
                     gradient: [Color(0xFF2196F3), Color(0xFF42A5F5)],
                   ),
-                  ModernFeatureCard(
-                    icon: Icons.people,
-                    title: 'Fokus Komunitas',
-                    description: 'Dibangun khusus untuk koperasi guna memperkuat ikatan komunitas dan ekonomi lokal.',
-                    color: Color(0xFF9C27B0),
-                    gradient: [Color(0xFF9C27B0), Color(0xFFBA68C8)],
-                  ),
-                  ModernFeatureCard(
+                  HajifundFeatureCard(
                     icon: Icons.trending_up,
-                    title: 'Return Transparan',
-                    description: 'Pelacakan investasi real-time dengan distribusi keuntungan dan metrik kinerja yang jelas.',
+                    title: 'Return Kompetitif',
+                    description: 'Dapatkan return hingga 18% per tahun dengan sistem bagi hasil yang transparan.',
                     color: Color(0xFFFF9800),
                     gradient: [Color(0xFFFF9800), Color(0xFFFFB74D)],
                   ),
-                  ModernFeatureCard(
-                    icon: Icons.mobile_friendly,
-                    title: 'Multi-Platform',
-                    description: 'Akses investasi Anda di mana saja dengan aplikasi web dan mobile kami.',
-                    color: Color(0xFF00BCD4),
-                    gradient: [Color(0xFF00BCD4), Color(0xFF4DD0E1)],
+                  HajifundFeatureCard(
+                    icon: Icons.speed,
+                    title: 'Proses Cepat',
+                    description: 'Pendanaan dan pencairan dana yang cepat dengan teknologi digital terdepan.',
+                    color: Color(0xFF9C27B0),
+                    gradient: [Color(0xFF9C27B0), Color(0xFFBA68C8)],
                   ),
-                  ModernFeatureCard(
-                    icon: Icons.analytics,
-                    title: 'Analitik Cerdas',
-                    description: 'Analitik dan wawasan canggih untuk membuat keputusan investasi yang tepat.',
-                    color: Color(0xFF795548),
-                    gradient: [Color(0xFF795548), Color(0xFFA1887F)],
-                  ),
-                  ModernFeatureCard(
-                    icon: Icons.support_agent,
-                    title: 'Dukungan 24/7',
-                    description: 'Tim dukungan khusus untuk membantu Anda dengan pertanyaan atau masalah apa pun.',
+                  HajifundFeatureCard(
+                    icon: Icons.shield,
+                    title: 'Mitigasi Risiko',
+                    description: 'Sistem penilaian kredit yang ketat dan diversifikasi portofolio untuk meminimalisir risiko.',
                     color: Color(0xFFE91E63),
                     gradient: [Color(0xFFE91E63), Color(0xFFF06292)],
                   ),
-                  ModernFeatureCard(
-                    icon: Icons.speed,
-                    title: 'Proses Cepat',
-                    description: 'Proses persetujuan proyek dan pencairan dana yang cepat.',
+                  HajifundFeatureCard(
+                    icon: Icons.mobile_friendly,
+                    title: 'Mudah Digunakan',
+                    description: 'Platform yang user-friendly dengan akses 24/7 melalui web dan aplikasi mobile.',
+                    color: Color(0xFF00BCD4),
+                    gradient: [Color(0xFF00BCD4), Color(0xFF4DD0E1)],
+                  ),
+                  HajifundFeatureCard(
+                    icon: Icons.analytics,
+                    title: 'Laporan Transparan',
+                    description: 'Laporan keuangan dan kinerja investasi yang transparan dan real-time.',
+                    color: Color(0xFF795548),
+                    gradient: [Color(0xFF795548), Color(0xFFA1887F)],
+                  ),
+                  HajifundFeatureCard(
+                    icon: Icons.support_agent,
+                    title: 'Customer Service',
+                    description: 'Tim customer service yang responsif dan berpengalaman dalam keuangan syariah.',
                     color: Color(0xFF607D8B),
                     gradient: [Color(0xFF607D8B), Color(0xFF90A4AE)],
                   ),
@@ -159,7 +152,7 @@ class FeaturesSection extends StatelessWidget {
           
           const SizedBox(height: AppSizes.xxl * 2),
           
-          // Islamic Principles Section
+          // HAJIFUND Investment Calculator Section
           Container(
             padding: const EdgeInsets.all(AppSizes.xl * 1.5),
             decoration: BoxDecoration(
@@ -178,7 +171,7 @@ class FeaturesSection extends StatelessWidget {
             ),
             child: Column(
               children: [
-                // Header with Islamic symbol
+                // Calculator Header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -189,14 +182,14 @@ class FeaturesSection extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
-                        Icons.mosque,
+                        Icons.calculate,
                         color: Color(0xFF1B5E20),
                         size: 24,
                       ),
                     ),
                     const SizedBox(width: AppSizes.md),
                     Text(
-                      'Prinsip Syariah Islam',
+                      'Kalkulator Investasi Syariah',
                       style: AppTextStyles.h3.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w800,
@@ -207,56 +200,22 @@ class FeaturesSection extends StatelessWidget {
                 
                 const SizedBox(height: AppSizes.xl),
                 
-                // Islamic principles grid
+                // Calculator Content
                 LayoutBuilder(
                   builder: (context, constraints) {
                     return constraints.maxWidth > 768 
                       ? Row(
                           children: [
-                            Expanded(
-                              child: _buildIslamicPrinciple(
-                                '📜',
-                                'Mudharabah',
-                                'Sistem bagi hasil yang adil antara investor dan pengelola usaha',
-                              ),
-                            ),
+                            Expanded(child: _buildCalculatorExample()),
                             const SizedBox(width: AppSizes.xl),
-                            Expanded(
-                              child: _buildIslamicPrinciple(
-                                '🚫',
-                                'Bebas Riba',
-                                'Tidak ada bunga atau riba dalam semua transaksi investasi',
-                              ),
-                            ),
-                            const SizedBox(width: AppSizes.xl),
-                            Expanded(
-                              child: _buildIslamicPrinciple(
-                                '🔍',
-                                'Transparansi',
-                                'Keterbukaan penuh dalam pengelolaan dan distribusi keuntungan',
-                              ),
-                            ),
+                            Expanded(child: _buildInvestmentBenefits()),
                           ],
                         )
                       : Column(
                           children: [
-                            _buildIslamicPrinciple(
-                              '📜',
-                              'Mudharabah',
-                              'Sistem bagi hasil yang adil antara investor dan pengelola usaha',
-                            ),
-                            const SizedBox(height: AppSizes.lg),
-                            _buildIslamicPrinciple(
-                              '🚫',
-                              'Bebas Riba',
-                              'Tidak ada bunga atau riba dalam semua transaksi investasi',
-                            ),
-                            const SizedBox(height: AppSizes.lg),
-                            _buildIslamicPrinciple(
-                              '🔍',
-                              'Transparansi',
-                              'Keterbukaan penuh dalam pengelolaan dan distribusi keuntungan',
-                            ),
+                            _buildCalculatorExample(),
+                            const SizedBox(height: AppSizes.xl),
+                            _buildInvestmentBenefits(),
                           ],
                         );
                   },
@@ -269,44 +228,200 @@ class FeaturesSection extends StatelessWidget {
     );
   }
 
-  Widget _buildIslamicPrinciple(String emoji, String title, String description) {
+  Widget _buildCalculatorExample() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Simulasi Investasi',
+            style: AppTextStyles.h5.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          
+          const SizedBox(height: AppSizes.lg),
+          
+          // Investment amount
+          _buildCalculatorRow(
+            'Jumlah Investasi',
+            'Rp 10.000.000',
+            Icons.account_balance_wallet,
+            const Color(0xFF2196F3),
+          ),
+          
+          const SizedBox(height: AppSizes.md),
+          
+          // Duration
+          _buildCalculatorRow(
+            'Jangka Waktu',
+            '12 Bulan',
+            Icons.schedule,
+            const Color(0xFF9C27B0),
+          ),
+          
+          const SizedBox(height: AppSizes.md),
+          
+          // Return rate
+          _buildCalculatorRow(
+            'Estimasi Return',
+            '16% per tahun',
+            Icons.trending_up,
+            const Color(0xFF4CAF50),
+          ),
+          
+          const SizedBox(height: AppSizes.lg),
+          
+          // Divider
+          Container(
+            height: 1,
+            color: AppColors.textDisabled.withOpacity(0.3),
+          ),
+          
+          const SizedBox(height: AppSizes.lg),
+          
+          // Result
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Estimasi Keuntungan',
+                style: AppTextStyles.h6.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                'Rp 1.600.000',
+                style: AppTextStyles.h5.copyWith(
+                  color: const Color(0xFFFF6F00),
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCalculatorRow(String label, String value, IconData icon, Color color) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: color,
+            size: 16,
+          ),
+        ),
+        const SizedBox(width: AppSizes.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              Text(
+                value,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInvestmentBenefits() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          emoji,
-          style: const TextStyle(fontSize: 48),
-        ),
-        const SizedBox(height: AppSizes.md),
-        Text(
-          title,
+          'Keuntungan Investasi P2P Lending Syariah',
           style: AppTextStyles.h5.copyWith(
             color: AppColors.primary,
             fontWeight: FontWeight.w700,
           ),
-          textAlign: TextAlign.center,
         ),
-        const SizedBox(height: AppSizes.sm),
-        Text(
-          description,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
-            height: 1.6,
+        
+        const SizedBox(height: AppSizes.lg),
+        
+        ...[
+          'Return kompetitif hingga 18% per tahun',
+          'Investasi minimal mulai dari Rp 100.000',
+          'Diversifikasi portofolio otomatis',
+          'Proses yang mudah dan transparan',
+          'Sesuai dengan prinsip syariah Islam',
+          'Terdaftar dan diawasi OJK',
+        ].map((benefit) => Padding(
+          padding: const EdgeInsets.only(bottom: AppSizes.md),
+          child: Row(
+            children: [
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF4CAF50),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 12,
+                ),
+              ),
+              const SizedBox(width: AppSizes.md),
+              Expanded(
+                child: Text(
+                  benefit,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+            ],
           ),
-          textAlign: TextAlign.center,
-        ),
+        )).toList(),
       ],
     );
   }
 }
 
-class ModernFeatureCard extends StatelessWidget {
+class HajifundFeatureCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String description;
   final Color color;
   final List<Color> gradient;
 
-  const ModernFeatureCard({
+  const HajifundFeatureCard({
     super.key,
     required this.icon,
     required this.title,
@@ -329,11 +444,15 @@ class ModernFeatureCard extends StatelessWidget {
             offset: const Offset(0, 8),
           ),
         ],
+        border: Border.all(
+          color: color.withOpacity(0.1),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Modern Icon with gradient
+          // Icon with gradient background
           Container(
             width: 70,
             height: 70,
@@ -361,7 +480,7 @@ class ModernFeatureCard extends StatelessWidget {
           
           const SizedBox(height: AppSizes.lg),
           
-          // Title with modern typography
+          // Title
           Text(
             title,
             style: AppTextStyles.h5.copyWith(
@@ -373,7 +492,7 @@ class ModernFeatureCard extends StatelessWidget {
           
           const SizedBox(height: AppSizes.sm),
           
-          // Description with better spacing
+          // Description
           Expanded(
             child: Text(
               description,
@@ -385,7 +504,7 @@ class ModernFeatureCard extends StatelessWidget {
             ),
           ),
           
-          // Modern accent line
+          // Accent line
           Container(
             width: 40,
             height: 3,

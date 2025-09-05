@@ -3,8 +3,10 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../utils/constants.dart';
 import '../../widgets/common/app_button.dart';
 // import '../../widgets/common/app_text_field.dart';
-import '../../widgets/landing/hero_section.dart';
-import '../../widgets/landing/features_section.dart';
+import '../../widgets/landing/hajifund_navigation.dart';
+import '../../widgets/landing/hajifund_hero_section.dart';
+import '../../widgets/landing/hajifund_features_section.dart';
+import '../../widgets/landing/statistics_section.dart';
 import '../../widgets/landing/how_it_works_section.dart';
 import '../../widgets/landing/testimonials_section.dart';
 import '../../widgets/landing/cta_section.dart';
@@ -46,78 +48,43 @@ class _LandingScreenState extends State<LandingScreen> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          // App Bar
+          // HAJIFUND Navigation Bar
           SliverAppBar(
-            expandedHeight: 80,
+            expandedHeight: AppSizes.navBarHeight,
             floating: false,
             pinned: true,
-            backgroundColor: _isScrolled ? AppColors.primary : Colors.transparent,
-            elevation: _isScrolled ? 4 : 0,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: BoxDecoration(
                   gradient: _isScrolled 
                     ? null 
-                    : AppGradients.primaryGradient,
+                    : AppGradients.heroGradient,
+                ),
+                child: HajifundNavigation(
+                  isScrolled: _isScrolled,
+                  onLoginPressed: () => Navigator.pushNamed(context, '/login'),
+                  onRegisterPressed: () => Navigator.pushNamed(context, '/register'),
+                  onSectionTap: _scrollToSection,
                 ),
               ),
             ),
-            title: _isScrolled 
-              ? Text(
-                  AppConstants.appName,
-                  style: AppTextStyles.h5.copyWith(color: Colors.white),
-                )
-              : null,
-            actions: [
-              if (!_isScrolled) ...[
-                TextButton(
-                  onPressed: () => _scrollToSection('features'),
-                  child: const Text(
-                    'Features',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => _scrollToSection('how-it-works'),
-                  child: const Text(
-                    'How It Works',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => _scrollToSection('about'),
-                  child: const Text(
-                    'About',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(width: AppSizes.md),
-              ],
-              AppButton(
-                text: 'Login',
-                variant: ButtonVariant.outlined,
-                onPressed: () => Navigator.pushNamed(context, '/login'),
-                textColor: Colors.white,
-                borderColor: Colors.white,
-              ),
-              const SizedBox(width: AppSizes.sm),
-              AppButton(
-                text: 'Get Started',
-                onPressed: () => Navigator.pushNamed(context, '/register'),
-                backgroundColor: AppColors.secondary,
-              ),
-              const SizedBox(width: AppSizes.md),
-            ],
           ),
           
-          // Hero Section
+          // HAJIFUND Hero Section
           const SliverToBoxAdapter(
-            child: HeroSection(),
+            child: HajifundHeroSection(),
           ),
           
-          // Features Section
+          // Statistics Section
           const SliverToBoxAdapter(
-            child: FeaturesSection(),
+            child: StatisticsSection(),
+          ),
+          
+          // HAJIFUND Features Section
+          const SliverToBoxAdapter(
+            child: HajifundFeaturesSection(),
           ),
           
           // How It Works Section

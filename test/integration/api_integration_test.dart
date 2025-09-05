@@ -249,7 +249,7 @@ class ApiIntegrationTest {
 
       // Test create project
       final createResponse = await http.post(
-        Uri.parse('$baseUrl/projects'),
+          Uri.parse('$baseUrl/projects'),
         headers: headers,
         body: jsonEncode(testProject),
       );
@@ -320,7 +320,7 @@ class ApiIntegrationTest {
 
       // Test create investment
       final createResponse = await http.post(
-        Uri.parse('$baseUrl/investments'),
+          Uri.parse('$baseUrl/investments'),
         headers: headers,
         body: jsonEncode(testInvestment),
       );
@@ -391,8 +391,8 @@ class ApiIntegrationTest {
       // Test invalid data
       final invalidDataResponse = await http.post(
         Uri.parse('$baseUrl/cooperatives'),
-        headers: {
-          'Content-Type': 'application/json',
+          headers: {
+            'Content-Type': 'application/json',
           'Authorization': 'Bearer $authToken',
         },
         body: jsonEncode({'invalid': 'data'}),
@@ -428,7 +428,7 @@ class ApiIntegrationTest {
       });
 
       final responses = await Future.wait(futures);
-      stopwatch.stop();
+        stopwatch.stop();
 
       // All requests should succeed
       for (final response in responses) {
